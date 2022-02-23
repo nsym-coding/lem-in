@@ -180,7 +180,7 @@ func (g *Graph) AddEdge(from, to string) {
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
-	//add edge
+	//add edge etc
 }
 
 //Print will print the adjacent list for each Room of the graph
