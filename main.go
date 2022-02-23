@@ -36,16 +36,17 @@ func NumAnts(s []string) string {
 	antNum := s[0]
 	s = readAntsFile("ants.txt")
 	if s[0] <= "0" {
-		err := fmt.Errorf("Invalid number of ants!")
+		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
 	}
 	return antNum
 }
 
-func StartRoom(s []string) string {
+// Gets out the start room and returns it
+func StartRoom([]string) string {
 
 	var startRoom string
-	s = readAntsFile("ants.txt")
+	s := readAntsFile("ants.txt")
 	//	fmt.Println(s)
 
 	for i := 0; i < len(s); i++ {
@@ -60,10 +61,11 @@ func StartRoom(s []string) string {
 
 }
 
-func EndRoom(s []string) string {
+// Gets out the end room and returns it
+func EndRoom([]string) string {
 	var endRoom string
-	s = readAntsFile("ants.txt")
-	//	fmt.Println(s)
+	s := readAntsFile("ants.txt")
+	// fmt.Println(s)
 
 	for i := 0; i < len(s); i++ {
 		if s[i] == "##end" {
@@ -144,6 +146,8 @@ func main() {
 		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
 		if strings.Contains(string(line), "-") {
 			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
+			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+
 		}
 
 	}
@@ -161,14 +165,18 @@ func (g *Graph) AddEdge(from, to string) {
 
 	//check error
 	if fromRoom == nil || toRoom == nil {
-		err := fmt.Errorf("Invalid edge (%v-->%v)", from, to)
+		err := fmt.Errorf("invalid edge (%v-->%v)", from, to)
 		fmt.Println(err.Error())
 	} else if contains(fromRoom.adjacent, to) {
-		err := fmt.Errorf("Existing edge (%v-->%v)", from, to)
+		err := fmt.Errorf("existing edge (%v-->%v)", from, to)
 		fmt.Println(err.Error())
 	} else if fromRoom == toRoom {
-		err := fmt.Errorf("Cannot connect room to itself (%v --> %v)", from, to)
+		err := fmt.Errorf("cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
+	} else if fromRoom.key == EndRoom(readAntsFile("ants.txt")) {
+		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+	} else if toRoom.key == StartRoom(readAntsFile("ants.txt")) {
+		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
@@ -199,4 +207,8 @@ func (g *Graph) Print() {
 		}
 	}
 	fmt.Println()
+}
+
+func (g *Graph) dfs(*Graph) {
+
 }

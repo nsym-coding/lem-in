@@ -1,0 +1,50 @@
+dfs(start)
+
+start.visited =  true // change the value from false to true
+
+for each neighbour := range start{
+    if neighbour[visited] != true && neighbour[id] != end{
+        dfs(neighbour) // this is essentially dfs(t)
+    }else if neighbour[id] == end{
+        return room[true] from list?
+    }
+}
+
+// dfs(t)
+
+for each neighbour := range t{
+    if neighbour[visited] != true && neighbour[id] != end{
+        dfs(neighbour) // this is essentially dfs(E)
+    }else if neighbour[id] == end{
+        return room[true] from list?
+    }
+
+// dfs(E)
+for each neighbour := range E{
+    if neighbour[visited] != true && neighbour[id] != end{
+        dfs(neighbour) // this is essentially dfs(a)
+    }else if neighbour[id] == end{
+        return room[true] from list?
+    }
+
+
+// dfs(a)
+for each neighbour := range a{
+    if neighbour[visited] != true && neighbour[id] != end{
+        dfs(neighbour) // this is essentially dfs(m)
+    }else if neighbour[id] == end{
+        return room[true] from list?
+    }
+
+// dfs(m)
+for each neighbour := range m{
+    if neighbour[visited] != true && neighbour[id] != end{
+        dfs(neighbour) // this is essentially dfs(end)
+    }else if neighbour[id] == end{
+        return room[true] from list? // ideally it stops here and returns the path fro
+        for each neighbour := range m{
+            if neighbour[visited] != true && neighbour[id] != end{
+                dfs(neighbour) // ideally this would tell it to check the other neighbours of m
+            }
+        }
+
