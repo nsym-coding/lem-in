@@ -141,6 +141,7 @@ func main() {
 }
 
 func (g *Graph) PrintPath() {
+	fmt.Println(StartRoom(readAntsFile("ants.txt")))
 	for _, v := range g.rooms {
 		for _, r := range v.path {
 			fmt.Println(r)
