@@ -16,6 +16,7 @@ type Graph struct {
 type Room struct {
 	key      string
 	adjacent []*Room
+	visited  bool
 }
 
 // Reads file and returns a string slice
@@ -114,28 +115,6 @@ func main() {
 	EndRoom(readAntsFile("ants.txt"))
 
 	test := &Graph{}
-	// rooms := []string{}
-	// for _, room := range rooms {
-	// 	test.AddRoom(room)
-	// }
-
-	//fmt.Println(readAntsFile("ants.txt"))
-
-	//add rooms
-	// fmt.Println(strings.Split(readAntsFile("ants.txt")[2], " ")[0])
-
-	// reading all rooms
-
-	/* need to add in condition so that it only selects the room after ##start as the start room
-	and the room after ##end as the end room*/
-	//var startRoom string
-	//var endRoom string
-	// for _, line := range readAntsFile("ants.txt") {
-	// 	if strings.Contains(string(line), "##start") {
-	// 		line = startRoom
-	// 		fmt.Println("This is the start room: %s", startRoom)
-
-	// 	}
 
 	//adding all rooms
 	for i, line := range readAntsFile("ants.txt") {
@@ -146,12 +125,13 @@ func main() {
 		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
 		if strings.Contains(string(line), "-") {
 			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
 
 		}
 
 	}
 	test.Print()
+	dfsStart(test)
 }
 
 // add all edges
@@ -173,10 +153,10 @@ func (g *Graph) AddEdge(from, to string) {
 	} else if fromRoom == toRoom {
 		err := fmt.Errorf("cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
-	} else if fromRoom.key == EndRoom(readAntsFile("ants.txt")) {
-		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
-	} else if toRoom.key == StartRoom(readAntsFile("ants.txt")) {
-		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+		// } else if fromRoom.key == EndRoom(readAntsFile("ants.txt")) {
+		// 	toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+		// } else if toRoom.key == StartRoom(readAntsFile("ants.txt")) {
+		// 	toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
@@ -209,6 +189,57 @@ func (g *Graph) Print() {
 	fmt.Println()
 }
 
-func (g *Graph) dfs(*Graph) {
+// func dfs(g *Graph, sVertex *Room, eVertex *Room) []string {
 
+// 	sVertex = g.getRoom(StartRoom(readAntsFile("ants.txt")))
+// 	eVertex = g.getRoom(EndRoom(readAntsFile("ants.txt")))
+
+// 	vRooms := []string{}
+
+// 	for _, room := range g.rooms {
+// 		if room.key == sVertex.key {
+// 			room.visited = true
+// 			vRooms = append(vRooms, room.key)
+// 			for _, nodes := range room.adjacent {
+// 				if !nodes.visited && nodes.key != eVertex.key {
+// 					dfs(g, nodes, eVertex)
+// 					vRooms = append(vRooms, nodes.key)
+// 					continue
+// 				} else if nodes.key == EndRoom(readAntsFile("ants.txt")) {
+// 					fmt.Println(strings.Join(vRooms, ""))
+// 					break
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return vRooms
+// }
+
+// func repDFS()
+
+func DFS(r *Room) {
+
+	if r.key == EndRoom(readAntsFile("ants.txt")) {
+		fmt.Println(r.key)
+	} else {
+		r.visited = true
+		for _, nbr := range r.adjacent {
+			if !nbr.visited {
+				DFS(nbr)
+				nbr.visited = true
+			}
+			if nbr.visited {
+				for _, room := range nbr.adjacent {
+					if room.visited {
+						fmt.Println(room.key)
+					}
+				}
+			}
+		}
+	}
+}
+
+func dfsStart(g *Graph) {
+	DFS(g.getRoom(StartRoom(readAntsFile("ants.txt"))))
 }
