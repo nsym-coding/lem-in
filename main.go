@@ -134,7 +134,7 @@ func main() {
 	test.Print()
 	dfsStart(test)
 
-	test.PrintPath()
+	//test.PrintPath()
 
 }
 
@@ -195,7 +195,7 @@ func (g *Graph) Print() {
 
 		}
 		for _, v := range v.adjacent {
-			fmt.Printf(" %v", v.key)
+			fmt.Printf(" %v,%T", v.key, v.key)
 		}
 	}
 	fmt.Println()
@@ -230,17 +230,19 @@ func (g *Graph) Print() {
 
 // func repDFS()
 
-func DFS(r *Room) []string {
+func DFS(r *Room) {
 
 	vList := []string{}
 
 	if r.key == EndRoom(readAntsFile("ants.txt")) {
-		return r.path
+		fmt.Println("turn")
 	} else {
 		r.visited = true
 		vList = append(vList, r.key)
 		for _, nbr := range r.adjacent {
 			if !nbr.visited {
+				fmt.Println(nbr.key)
+
 				vList = append(vList, nbr.key)
 				nbr.path = append(nbr.path, r.key)
 				DFS(nbr)
@@ -258,7 +260,7 @@ func DFS(r *Room) []string {
 			// }
 		}
 	}
-	return r.path
+
 }
 
 func dfsStart(g *Graph) {
