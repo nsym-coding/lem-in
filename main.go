@@ -16,6 +16,7 @@ type Graph struct {
 type Room struct {
 	key      string
 	adjacent []*Room
+	path     []string
 	visited  bool
 }
 
@@ -125,13 +126,24 @@ func main() {
 		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
 		if strings.Contains(string(line), "-") {
 			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
 
 		}
 
 	}
 	test.Print()
 	dfsStart(test)
+
+	test.PrintPath()
+
+}
+
+func (g *Graph) PrintPath() {
+	for _, v := range g.rooms {
+		for _, r := range v.path {
+			fmt.Println(r)
+		}
+	}
 }
 
 // add all edges
@@ -218,26 +230,35 @@ func (g *Graph) Print() {
 
 // func repDFS()
 
-func DFS(r *Room) {
+func DFS(r *Room) []string {
+
+	vList := []string{}
 
 	if r.key == EndRoom(readAntsFile("ants.txt")) {
-		fmt.Println(r.key)
+		return r.path
 	} else {
 		r.visited = true
+		vList = append(vList, r.key)
 		for _, nbr := range r.adjacent {
 			if !nbr.visited {
+				vList = append(vList, nbr.key)
+				nbr.path = append(nbr.path, r.key)
 				DFS(nbr)
-				nbr.visited = true
+				//nbr.visited = true
+			} else if !nbr.visited && nbr.key == EndRoom(readAntsFile("ants.txt")) {
+				continue
 			}
-			if nbr.visited {
-				for _, room := range nbr.adjacent {
-					if room.visited {
-						fmt.Println(room.key)
-					}
-				}
-			}
+
+			// for _, k := range vList {
+
+			// 	//fmt.Println(StartRoom(readAntsFile("ants.txt")))
+			// 	fmt.Println(k)
+			// 	//fmt.Println(EndRoom(readAntsFile("ants.txt")))
+
+			// }
 		}
 	}
+	return r.path
 }
 
 func dfsStart(g *Graph) {
