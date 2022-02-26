@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+var (
+	startRoom = StartRoom(readAntsFile("ants.txt"))
+	endRoom   = EndRoom(readAntsFile("ants.txt"))
+)
+
 //Graph structure
 type Graph struct {
 	rooms []*Room
@@ -113,8 +118,8 @@ func contains(s []*Room, k string) bool {
 }
 
 func main() {
-	StartRoom(readAntsFile("ants.txt"))
-	EndRoom(readAntsFile("ants.txt"))
+	// StartRoom(readAntsFile("ants.txt"))
+	// EndRoom(readAntsFile("ants.txt"))
 
 	test := &Graph{}
 
@@ -141,13 +146,18 @@ func main() {
 }
 
 func (g *Graph) PrintPath() {
-	fmt.Println(StartRoom(readAntsFile("ants.txt")))
+	//fmt.Println(StartRoom(readAntsFile("ants.txt")))
+	// need it to only print paths that start with start room and end with end room
 	for _, v := range g.rooms {
+
 		for _, r := range v.path {
+			// if strings.Contains(v.path[i], EndRoom(readAntsFile("ants.txt"))) {
 			fmt.Println(r)
 		}
 	}
 }
+
+//}
 
 // add all edges
 
@@ -168,9 +178,9 @@ func (g *Graph) AddEdge(from, to string) {
 	} else if fromRoom == toRoom {
 		err := fmt.Errorf("cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
-	} else if fromRoom.key == EndRoom(readAntsFile("ants.txt")) {
+	} else if fromRoom.key == endRoom {
 		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
-	} else if toRoom.key == StartRoom(readAntsFile("ants.txt")) {
+	} else if toRoom.key == startRoom {
 		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
@@ -187,10 +197,10 @@ func (g *Graph) Print() {
 	fmt.Println()
 
 	for _, v := range g.rooms {
-		if v.key == StartRoom(readAntsFile("ants.txt")) {
+		if v.key == startRoom {
 			fmt.Printf("\n Start Room is %v : ", StartRoom(readAntsFile("ants.txt")))
 
-		} else if v.key == EndRoom(readAntsFile("ants.txt")) {
+		} else if v.key == endRoom {
 			fmt.Printf("\n End Room is %v :", EndRoom(readAntsFile("ants.txt")))
 
 		} else {
@@ -208,19 +218,28 @@ func DFS(r *Room) {
 
 	vList := []string{}
 
-	if r.key == EndRoom(readAntsFile("ants.txt")) {
+	if r.key == endRoom {
+		vList = append(vList, endRoom)
+		r.path = append(r.path, endRoom)
 		fmt.Println()
 
 	} else {
 		r.visited = true
 		vList = append(vList, r.key)
 		for _, nbr := range r.adjacent {
+			for _, n := range nbr.adjacent {
+				if n.key != endRoom {
+					continue
+				}
+			}
 			if !nbr.visited {
 
 				vList = append(vList, nbr.key)
 				fmt.Println(vList)
+				nbr.path = append(nbr.path, r.key)
 				DFS(nbr)
-				nbr.path = append(nbr.path, nbr.key)
+				// append to visited list all rooms with r.visited status only if you find the end room
+
 				//fmt.Println(nbr.key)
 				//break
 				//nbr.visited = true
@@ -235,5 +254,5 @@ func DFS(r *Room) {
 }
 
 func dfsStart(g *Graph) {
-	DFS(g.getRoom(StartRoom(readAntsFile("ants.txt"))))
+	DFS(g.getRoom(startRoom))
 }
