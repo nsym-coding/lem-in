@@ -182,7 +182,7 @@ func main() {
 	//GFS(test)
 	//test.PrintPath()
 	//DeleteEdge()
-	test.Print()
+	//test.Print()
 
 }
 
@@ -283,17 +283,17 @@ func DFS(r *Room, g Graph) {
 		}
 
 	} else {
-		if len(sRoom.adjacent) > 1 {
+		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
 			vList = append(vList, r.key)
 
-			fmt.Println("*", vList)
+			//fmt.Println("*", vList)
 			sRoom.adjacent = sRoom.adjacent[1:][:]
 
 			DFS(sRoom, Graph{g.rooms})
 
 		} else {
 			vList = append(vList, r.key)
-			fmt.Println("*", vList)
+			//fmt.Println("*", vList)
 		}
 	}
 }
