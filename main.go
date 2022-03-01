@@ -176,7 +176,7 @@ func main() {
 
 	}
 
-	test.Print()
+	//test.Print()
 	DFS(test.getRoom(StartR), test)
 	//dfsStart(test)
 	//GFS(test)
