@@ -4,15 +4,16 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
-//Graph structure
+// Graph structure
 type Graph struct {
 	rooms []*Room
 }
 
-//Room structure
+// Room structure
 type Room struct {
 	key      string
 	adjacent []*Room
@@ -35,19 +36,20 @@ func readAntsFile(filename string) []string {
 	return lines
 }
 
-func NumAnts(s []string) string {
-	antNum := s[0]
+func NumAnts(s []string) int {
 	s = readAntsFile("ants.txt")
+	antNum := s[0]
 	if s[0] <= "0" {
 		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
 	}
-	return antNum
+	n, _ := strconv.Atoi(antNum)
+
+	return n
 }
 
 // Gets out the start room and returns it
 func StartRoom([]string) string {
-
 	var startRoom string
 	s := readAntsFile("ants.txt")
 	//	fmt.Println(s)
@@ -55,11 +57,9 @@ func StartRoom([]string) string {
 		if s[i] == "##start" {
 			startRoom = strings.Split(string(s[i+1]), " ")[0]
 		}
-
 	}
-	//fmt.Println(startRoom)
+	// fmt.Println(startRoom)
 	return startRoom
-
 }
 
 // Gets out the end room and returns it
@@ -71,9 +71,8 @@ func EndRoom([]string) string {
 		if s[i] == "##end" {
 			endRoom = strings.Split(string(s[i+1]), " ")[0]
 		}
-
 	}
-	//fmt.Println(endRoom)
+	// fmt.Println(endRoom)
 	return endRoom
 }
 
@@ -82,9 +81,11 @@ var (
 	EndR   = EndRoom(readAntsFile("ants.txt"))
 )
 
+var pathSlice [][]string
+
 var start *Room
 
-//Add Room to a graph
+// Add Room to a graph
 func (g *Graph) AddRoom(k string) {
 	if contains(g.rooms, k) {
 		err := fmt.Errorf("Room %v not added because it is an existing key", k)
@@ -94,7 +95,7 @@ func (g *Graph) AddRoom(k string) {
 	}
 }
 
-//getRoom returns a pointer to the Room key integer
+// getRoom returns a pointer to the Room key integer
 func (g *Graph) getRoom(k string) *Room {
 	for i, v := range g.rooms {
 		if v.key == k {
@@ -104,7 +105,7 @@ func (g *Graph) getRoom(k string) *Room {
 	return nil
 }
 
-//contains checks if the Room key exists
+// contains checks if the Room key exists
 func contains(s []*Room, k string) bool {
 	for _, v := range s {
 		if k == v.key {
@@ -123,7 +124,7 @@ func doesContain(s string, sl []string) bool {
 	return false
 }
 
-//delete edge from starting room
+// delete edge from starting room
 // func (r *Room) DeleteEdge(k string) {
 
 // 	// if !contains(g.rooms, k) {
@@ -153,7 +154,6 @@ func doesContain(s string, sl []string) bool {
 // }
 
 func main() {
-
 	// err := errors.New("ERROR: invalid data format")
 	// if err != nil {
 	// 	fmt.Print(err, "\n")
@@ -162,7 +162,7 @@ func main() {
 
 	test := Graph{}
 
-	//adding all rooms
+	// adding all rooms
 	for i, line := range readAntsFile("ants.txt") {
 		if strings.Contains(string(line), " ") {
 			test.AddRoom(strings.Split(readAntsFile("ants.txt")[i], " ")[0])
@@ -171,19 +171,19 @@ func main() {
 		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
 		if strings.Contains(string(line), "-") {
 			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+			// test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
 		}
 
 	}
 
-	//test.Print()
+	// test.Print()
 	DFS(test.getRoom(StartR), test)
-	//dfsStart(test)
-	//GFS(test)
-	//test.PrintPath()
-	//DeleteEdge()
-	//test.Print()
-
+	output(pathSlice)
+	// dfsStart(test)
+	// GFS(test)
+	// test.PrintPath()
+	// DeleteEdge()
+	// test.Print()
 }
 
 func (g *Graph) PrintPath() {
@@ -198,11 +198,15 @@ func (g *Graph) PrintPath() {
 // add all edges
 // Add edge to the graph. deals with a directional graph only
 func (g *Graph) AddEdge(from, to string) {
-	//get Room
+	// get Room
 	fromRoom := g.getRoom(from)
 	toRoom := g.getRoom(to)
 
-	//check error
+	// check error
+
+	// if toRoom.key == "E2" && fromRoom.key != "B1" {
+	// 	toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+	// }
 	if fromRoom == nil || toRoom == nil {
 		err := fmt.Errorf("invalid edge (%v-->%v)", from, to)
 		fmt.Println(err.Error())
@@ -219,10 +223,10 @@ func (g *Graph) AddEdge(from, to string) {
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
-	//add edge etc
+	// add edge etc
 }
 
-//Print will print the adjacent list for each Room of the graph
+// Print will print the adjacent list for each Room of the graph
 func (g *Graph) Print() {
 	// fmt.Println(readAntsFile("ants.txt"))
 	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile("ants.txt")))
@@ -231,13 +235,10 @@ func (g *Graph) Print() {
 	for _, v := range g.rooms {
 		if v.key == StartR {
 			fmt.Printf("\n Start Room is %v : ", StartR)
-
 		} else if v.key == EndR {
 			fmt.Printf("\n End Room is %v :", EndR)
-
 		} else {
 			fmt.Printf("\n Room %v : ", v.key)
-
 		}
 		for _, v := range v.adjacent {
 			fmt.Printf(" %v,", v.key)
@@ -248,7 +249,6 @@ func (g *Graph) Print() {
 
 // Depth first search function that operates recursively
 func DFS(r *Room, g Graph) {
-
 	vList := []string{}
 	sRoom := g.getRoom(StartR)
 
@@ -268,34 +268,51 @@ func DFS(r *Room, g Graph) {
 				- then append their key to their path value
 				*/
 
-				//fmt.Println("*", vList)
+				// fmt.Println("*", vList)
 
 				nbr.path = append(r.path, nbr.key)
 				if doesContain(EndR, nbr.path) {
 					fmt.Println(nbr.path)
+					pathSlice = append(pathSlice, nbr.path)
 				}
-				//fmt.Println(nbr.path)
+				// fmt.Println(nbr.path)
 				vList = append(vList, nbr.key)
 				DFS(nbr, Graph{g.rooms})
 
 			}
-
 		}
 
 	} else {
 		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
 			vList = append(vList, r.key)
 
-			//fmt.Println("*", vList)
+			// fmt.Println("*", vList)
 			sRoom.adjacent = sRoom.adjacent[1:][:]
 
+			for _, v := range sRoom.adjacent {
+				fmt.Println(v.key)
+			}
 			DFS(sRoom, Graph{g.rooms})
 
 		} else {
 			vList = append(vList, r.key)
-			//fmt.Println("*", vList)
+			// fmt.Println("*", vList)
 		}
 	}
+}
+
+func output(p [][]string) {
+	p = pathSlice
+	// pathCount := 0
+	fmt.Println(len(p))
+
+	var ants []string
+
+	for _, v := range p {
+		fmt.Println(v)
+		ants = append(ants, "L1-")
+	}
+	fmt.Println(ants)
 }
 
 // Function that initialises that DFS algorithm by taking the target graph as an argument
