@@ -84,8 +84,6 @@ var (
 	EndR   = EndRoom(readAntsFile("ants.txt"))
 )
 
-var start *Room
-
 //Add Room to a graph
 func (g *Graph) AddRoom(k string) {
 	if contains(g.rooms, k) {
@@ -142,9 +140,9 @@ func main() {
 		}
 
 	}
-	fmt.Println(NumAnts(readAntsFile("ants.txt")))
 	test.Print()
 	DFS(test.getRoom(StartR), test)
+	fmt.Println(validPaths)
 
 }
 
@@ -208,9 +206,10 @@ func (g *Graph) Print() {
 	fmt.Println()
 }
 
+var validPaths [][]string
+
 // Depth first search function that operates recursively
 func DFS(r *Room, g Graph) {
-
 	// vList := []string{}
 	sRoom := g.getRoom(StartR)
 
@@ -228,7 +227,7 @@ func DFS(r *Room, g Graph) {
 
 				nbr.path = append(r.path, nbr.key)
 				if doesContain(EndR, nbr.path) {
-					fmt.Println(nbr.path)
+					validPaths = append(validPaths, nbr.path)
 				}
 				DFS(nbr, Graph{g.rooms})
 			}
@@ -237,12 +236,15 @@ func DFS(r *Room, g Graph) {
 		sRoom.adjacent = sRoom.adjacent[1:]
 		DFS(sRoom, Graph{g.rooms})
 	}
+
 }
 
-func Output(validpaths [][]string) string {
-	// get number of ants in int format
+// func Output(validpaths [][]string) string {
+// 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
+// 	graph := Graph{}
+// 	// valid paths from dfs function
 
-	// get the valid paths for the ants in a slice of slice
-
-	return "hello"
-}
+// 	// validPaths := [][]string}
+// 	DFS(graph.getRoom(StartR), graph)
+// 	return "hello"
+// }
