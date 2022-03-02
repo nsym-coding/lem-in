@@ -249,17 +249,13 @@ func (g *Graph) Print() {
 // Depth first search function that operates recursively
 func DFS(r *Room, g Graph) {
 
-	vList := []string{}
+	// vList := []string{}
 	sRoom := g.getRoom(StartR)
 
 	// set the room being checked visited status to true
+	// range through the neighbours of the r
 	if r.key != EndR {
 		r.visited = true
-
-		// append the r key to the visited list
-		vList = append(vList, r.key)
-
-		// range through the neighbours of the r
 		for _, nbr := range r.adjacent {
 			if !nbr.visited {
 				/* for each neighbour that hasn't been visited,
@@ -268,37 +264,17 @@ func DFS(r *Room, g Graph) {
 				- then append their key to their path value
 				*/
 
-				//fmt.Println("*", vList)
-
 				nbr.path = append(r.path, nbr.key)
 				if doesContain(EndR, nbr.path) {
 					fmt.Println(nbr.path)
 				}
-				//fmt.Println(nbr.path)
-				vList = append(vList, nbr.key)
 				DFS(nbr, Graph{g.rooms})
-
 			}
-
 		}
-
-	} else {
-		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
-			vList = append(vList, r.key)
-
-			//fmt.Println("*", vList)
-			sRoom.adjacent = sRoom.adjacent[1:][:]
-
-			DFS(sRoom, Graph{g.rooms})
-
-		} else {
-			vList = append(vList, r.key)
-			//fmt.Println("*", vList)
-		}
+	} else if !contains(sRoom.adjacent, EndR) {
+		// vList = append(vList, r.key)
+		// fmt.Println("hellothere")
+		sRoom.adjacent = sRoom.adjacent[1:]
+		DFS(sRoom, Graph{g.rooms})
 	}
 }
-
-// Function that initialises that DFS algorithm by taking the target graph as an argument
-// func dfsStart(g *Graph) {
-// 	DFS(g.getRoom(StartR))
-// }
