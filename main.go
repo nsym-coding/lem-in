@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -35,14 +36,15 @@ func readAntsFile(filename string) []string {
 	return lines
 }
 
-func NumAnts(s []string) string {
+func NumAnts(s []string) int {
 	antNum := s[0]
+	intAntNum, _ := strconv.Atoi(antNum)
 	s = readAntsFile("ants.txt")
 	if s[0] <= "0" {
 		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
 	}
-	return antNum
+	return intAntNum
 }
 
 // Gets out the start room and returns it
@@ -123,42 +125,7 @@ func doesContain(s string, sl []string) bool {
 	return false
 }
 
-//delete edge from starting room
-// func (r *Room) DeleteEdge(k string) {
-
-// 	// if !contains(g.rooms, k) {
-// 	//     err := fmt.Errorf("edge %v not deleted because it doesn't exist", k)
-// 	//     fmt.Println(err.Error())
-// 	// } else {
-// 	fmt.Println("Error check 1")
-
-// 	// for _, t := range r{
-// 	// 	fmt.Println("Error check 2")
-
-// 	start := g.get
-
-// 	for r.key = k{
-// 		r.adjacent =
-// 	}
-// 	fmt.Println("Error check 3")
-
-// 	r.adjacent = r.adjacent[1:]
-// 	fmt.Println("something")
-// 	// for i , room := range g.rooms[i].adjacent{
-// 	//     if  room.key == k {
-// 	//         g.rooms[i].adjacent =
-// 	//     }
-// 	// }
-
-// }
-
 func main() {
-
-	// err := errors.New("ERROR: invalid data format")
-	// if err != nil {
-	// 	fmt.Print(err, "\n")
-	// 	os.Exit(1)
-	// }
 
 	test := Graph{}
 
@@ -175,14 +142,9 @@ func main() {
 		}
 
 	}
-
+	fmt.Println(NumAnts(readAntsFile("ants.txt")))
 	test.Print()
 	DFS(test.getRoom(StartR), test)
-	//dfsStart(test)
-	//GFS(test)
-	//test.PrintPath()
-	//DeleteEdge()
-	//test.Print()
 
 }
 
@@ -272,9 +234,15 @@ func DFS(r *Room, g Graph) {
 			}
 		}
 	} else if !contains(sRoom.adjacent, EndR) {
-		// vList = append(vList, r.key)
-		// fmt.Println("hellothere")
 		sRoom.adjacent = sRoom.adjacent[1:]
 		DFS(sRoom, Graph{g.rooms})
 	}
+}
+
+func Output(validpaths [][]string) string {
+	// get number of ants in int format
+
+	// get the valid paths for the ants in a slice of slice
+
+	return "hello"
 }
