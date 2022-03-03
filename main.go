@@ -142,7 +142,7 @@ func main() {
 	}
 	test.Print()
 	DFS(test.getRoom(StartR), test)
-	fmt.Println(validPaths)
+	Output()
 
 }
 
@@ -206,6 +206,7 @@ func (g *Graph) Print() {
 	fmt.Println()
 }
 
+// global variable which will store all of the valid paths in a slice of slices of string.
 var validPaths [][]string
 
 // Depth first search function that operates recursively
@@ -239,12 +240,23 @@ func DFS(r *Room, g Graph) {
 
 }
 
-// func Output(validpaths [][]string) string {
-// 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
-// 	graph := Graph{}
-// 	// valid paths from dfs function
+func Output() string {
+	numOfAnts := NumAnts(readAntsFile("ants.txt"))
+	// valid paths from dfs function
+	vp := validPaths
 
-// 	// validPaths := [][]string}
-// 	DFS(graph.getRoom(StartR), graph)
-// 	return "hello"
-// }
+	// print paths
+	// for i := 0; i <= numOfAnts; i++ {
+	for _, slice := range vp {
+		for _, room := range slice {
+			for i := 1; i <= numOfAnts; i++ {
+
+				fmt.Printf("L%v-%v", i, room)
+			}
+		}
+	}
+	// }
+
+	// fmt.Println(vp)
+	return "hello"
+}
