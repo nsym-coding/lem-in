@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	//"container/list"
 	"fmt"
 	"os"
 	"strings"
@@ -82,8 +83,6 @@ var (
 	EndR   = EndRoom(readAntsFile("ants.txt"))
 )
 
-var start *Room
-
 //Add Room to a graph
 func (g *Graph) AddRoom(k string) {
 	if contains(g.rooms, k) {
@@ -117,6 +116,16 @@ func contains(s []*Room, k string) bool {
 func doesContain(s string, sl []string) bool {
 	for _, word := range sl {
 		if s == word {
+			return true
+		}
+	}
+	return false
+}
+
+func doesContainRoom(sl []*Room, s string) bool {
+
+	for _, word := range sl {
+		if s == word.key {
 			return true
 		}
 	}
@@ -177,12 +186,13 @@ func main() {
 	}
 
 	test.Print()
-	DFS(test.getRoom(StartR), test)
+	//DFS(test.getRoom(StartR), test)
 	//dfsStart(test)
 	//GFS(test)
 	//test.PrintPath()
 	//DeleteEdge()
-	//test.Print()
+	BFS(test.getRoom(StartR), test)
+	//	test.Print()
 
 }
 
@@ -249,7 +259,7 @@ func (g *Graph) Print() {
 // Depth first search function that operates recursively
 func DFS(r *Room, g Graph) {
 
-	vList := []string{}
+	//vList := []string{}
 	sRoom := g.getRoom(StartR)
 
 	// set the room being checked visited status to true
@@ -257,7 +267,7 @@ func DFS(r *Room, g Graph) {
 		r.visited = true
 
 		// append the r key to the visited list
-		vList = append(vList, r.key)
+		//vList = append(vList, r.key)
 
 		// range through the neighbours of the r
 		for _, nbr := range r.adjacent {
@@ -275,7 +285,7 @@ func DFS(r *Room, g Graph) {
 					fmt.Println(nbr.path)
 				}
 				//fmt.Println(nbr.path)
-				vList = append(vList, nbr.key)
+				//vList = append(vList, nbr.key)
 				DFS(nbr, Graph{g.rooms})
 
 			}
@@ -284,16 +294,17 @@ func DFS(r *Room, g Graph) {
 
 	} else {
 		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
-			vList = append(vList, r.key)
+			// vList = append(vList, r.key)
 
 			//fmt.Println("*", vList)
-			sRoom.adjacent = sRoom.adjacent[1:][:]
+			sRoom.adjacent = sRoom.adjacent[1:]
 
 			DFS(sRoom, Graph{g.rooms})
 
-		} else {
-			vList = append(vList, r.key)
-			//fmt.Println("*", vList)
+			// } else {
+			// 	// vList = append(vList, r.key)
+			// 	//fmt.Println("*", vList)
+			// }
 		}
 	}
 }
@@ -302,3 +313,54 @@ func DFS(r *Room, g Graph) {
 // func dfsStart(g *Graph) {
 // 	DFS(g.getRoom(StartR))
 // }
+
+// Breadth-First-Search as another graph traversal algorithm
+func BFS(r *Room, g Graph) {
+
+	//queue variable, procedurally populated with rooms yet to be visited
+	var queue []*Room
+
+	//set start room as visited
+	r.visited = true
+
+	//initialise queue with start room
+	queue = append(queue, r)
+
+	//checks the queue for a non-zero value
+	for len(queue) > 0 {
+		qfront := queue[0]
+
+		//this loop is solely for visualisation purposes
+		// for _, v := range qfront.adjacent {
+		// 	fmt.Print(v.key)
+		// }
+		// fmt.Println()
+		for _, room := range qfront.adjacent {
+			if !room.visited {
+				room.visited = true
+				room.path = append(qfront.path, room.key)
+				queue = append(queue, room)
+			}
+			// if checkEnd(g, room) {
+			// 	fmt.Println(room.path)
+			// 	os.Exit(0)
+			// }
+		}
+		if doesContainRoom(queue, g.getRoom(EndR).key) {
+			fmt.Println(qfront.path)
+			for i := 0; i < len(r.adjacent); i++ {
+				if r.adjacent[i].key == qfront.path[0] {
+					r.adjacent = append(r.adjacent[:i], r.adjacent[i+1:]...)
+					fmt.Println("test1", r.adjacent[i].key)
+				}
+			}
+			break
+		}
+		queue = queue[1:]
+		// for _, v := range queue {
+		// fmt.Print(v.key)
+		// }
+		fmt.Println()
+	}
+
+}
