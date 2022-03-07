@@ -176,7 +176,7 @@ func main() {
 
 	}
 
-	// test.Print()
+	test.Print()
 	DFS(test.getRoom(StartR), test)
 	output(pathSlice)
 	// dfsStart(test)
@@ -272,7 +272,7 @@ func DFS(r *Room, g Graph) {
 
 				nbr.path = append(r.path, nbr.key)
 				if doesContain(EndR, nbr.path) {
-					fmt.Println(nbr.path)
+					//fmt.Println(nbr.path)
 					pathSlice = append(pathSlice, nbr.path)
 				}
 				// fmt.Println(nbr.path)
@@ -289,9 +289,9 @@ func DFS(r *Room, g Graph) {
 			// fmt.Println("*", vList)
 			sRoom.adjacent = sRoom.adjacent[1:][:]
 
-			for _, v := range sRoom.adjacent {
-				fmt.Println(v.key)
-			}
+			// for _, v := range sRoom.adjacent {
+			// 	fmt.Println(v.key)
+			// }
 			DFS(sRoom, Graph{g.rooms})
 
 		} else {
@@ -301,18 +301,24 @@ func DFS(r *Room, g Graph) {
 	}
 }
 
-func output(p [][]string) {
-	p = pathSlice
-	// pathCount := 0
-	fmt.Println(len(p))
+func output(pathSlice [][]string) {
+	// fmt.Println(len(pathSlice))
+	ants := NumAnts(readAntsFile("ants.txt"))
+	unvisited := true
 
-	var ants []string
-
-	for _, v := range p {
-		fmt.Println(v)
-		ants = append(ants, "L1-")
+	for _, path := range pathSlice {
+		for spot, node := range path {
+			for i := 1; i <= ants; i++ {
+				if unvisited {
+					unvisited = false
+					fmt.Printf("L%v-%v, ", i, node)
+					if !unvisited {
+						fmt.Printf("L%v-%v, ", i, path[spot+1])
+					}
+				}
+			}
+		}
 	}
-	fmt.Println(ants)
 }
 
 // Function that initialises that DFS algorithm by taking the target graph as an argument

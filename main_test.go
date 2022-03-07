@@ -16,7 +16,7 @@ func Test_readAntsFile(t *testing.T) {
 func TestNumAnts(t *testing.T) {
 
 	got := NumAnts(readAntsFile("ants.txt"))
-	want := "10"
+	want := 10
 
 	if got != want {
 		t.Errorf("got: %q, wanted: %q instead", got, want)
