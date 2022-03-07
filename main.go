@@ -351,8 +351,8 @@ func BFS(r *Room, g Graph) {
 			for i := 0; i < len(r.adjacent); i++ {
 				if r.adjacent[i].key == qfront.path[0] {
 					r.adjacent = append(r.adjacent[:i], r.adjacent[i+1:]...)
-					fmt.Println("test1", r.adjacent[i].key)
 				}
+				fmt.Println("test1", r.adjacent[i].key)
 			}
 			break
 		}
