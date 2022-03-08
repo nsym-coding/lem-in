@@ -244,19 +244,38 @@ func Output() string {
 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
 	// valid paths from dfs function
 	vp := validPaths
+	// occupied := false
 
-	// print paths
-	// for i := 0; i <= numOfAnts; i++ {
-	for _, slice := range vp {
-		for _, room := range slice {
-			for i := 1; i <= numOfAnts; i++ {
+	// map to hold each room with visited bool
+	// append each path into the map
 
-				fmt.Printf("L%v-%v", i, room)
-			}
+	emptyRooms := make(map[string]bool)
+
+	for _, pathslice := range vp {
+		for _, room := range pathslice {
+			emptyRooms[room] = true
 		}
 	}
-	// }
 
+	fmt.Println(emptyRooms)
+
+	for _, path := range vp {
+		for _, room := range path {
+			for i := 1; i <= numOfAnts; i++ {
+				// if the empty room is true we want the same ant to move down the path first
+				if emptyRooms[room] {
+					fmt.Printf("L%v-%v ", i, room)
+					// emptyRooms[room] = false
+					// fmt.Printf("L%v-%v ", i, path[v+1]
+				}
+
+				// add condition for end room and room previous and after
+				// fmt.Println()
+			}
+			// emptyRooms[room] = true
+		}
+	}
+	fmt.Println(emptyRooms)
 	// fmt.Println(vp)
 	return "hello"
 }
