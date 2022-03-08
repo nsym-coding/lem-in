@@ -180,7 +180,7 @@ func main() {
 		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
 		if strings.Contains(string(line), "-") {
 			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
 		}
 
 	}
@@ -224,8 +224,8 @@ func (g *Graph) AddEdge(from, to string) {
 		fmt.Println(err.Error())
 	} else if fromRoom.key == EndR {
 		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
-	} else if toRoom.key == StartR {
-		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+		//} //else if toRoom.key == StartR {
+		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
@@ -314,9 +314,239 @@ func DFS(r *Room, g Graph) {
 // 	DFS(g.getRoom(StartR))
 // }
 
+func RemoveRoomIndex(s []*Room, index string) []*Room {
+	ret := make([]*Room, 0)
+
+	for i := 0; i < len(s); i++ {
+		if s[i].key == index {
+			ret = append(ret, s[:i]...)
+			ret = append(ret, s[i+1:]...)
+		}
+	}
+	return ret
+}
+
+func RemoveIndex(s []int, index int) []int {
+	ret := make([]int, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
+}
+
 // Breadth-First-Search as another graph traversal algorithm
+// func BFS(r *Room, g Graph) {
+
+// 	// queue variable, procedurally populated with rooms yet to be visited
+// 	var queue []string
+
+// 	// set start room as visited
+// 	r.visited = true
+
+// 	// initialise queue with start room
+// 	queue = append(queue, r.key)
+
+// 	// checks the queue for a non-zero value
+// 	for len(queue) > 0 {
+// 		qfront := g.getRoom(queue[0])
+
+// 		// this loop is solely for visualisation purposes
+// 		// for _, v := range qfront.adjacent {
+// 		// 	fmt.Print(v.key)
+// 		// }
+// 		// fmt.Println()
+// 		for _, room := range qfront.adjacent {
+// 			if !room.visited {
+// 				room.visited = true
+// 				room.path = append(qfront.path, room.key)
+// 				queue = append(queue, room.key)
+// 			}
+// 			// if checkEnd(g, room) {
+// 			// 	fmt.Println(room.path)
+// 			// 	os.Exit(0)
+// 			// }
+
+// 			if doesContain(g.getRoom(EndR).key, queue) {
+// 				//	fmt.Println(qfront.path)
+// 				fmt.Println(qfront.path)
+// 				//RemoveIndex(queue, qfront.key)
+// 				for i := 0; i < len(r.adjacent); i++ {
+// 					if r.adjacent[i].key == qfront.path[0] {
+// 						RemoveRoomIndex(r.adjacent, r.adjacent[i].key)
+// 						break
+// 					}
+// 					//fmt.Println("test1", r.adjacent[i].key)
+// 					continue
+// 				}
+
+// 				//BFS(r.adjacent[i], g)
+// 				//fmt.Println("test1", r.adjacent[i].key)
+// 				break
+// 			}
+// 		}
+// 		queue = queue[1:]
+// 		//BFS(qfront, g)
+// 		//BFS(room, g)
+// 		// for _, v := range queue {
+// 		// fmt.Print(v.key)
+// 		//}
+// 		fmt.Println()
+// 	}
+// }
+
+// func BFSY(r Room){
+
+// queue := []string
+
+// }
+
+// func BFS(r *Room, g Graph) {
+
+// 	var queue []*Room
+
+// 	r.visited = true
+
+// 	queue = append(queue, r)
+
+// 	for len(queue) > 0 {
+
+// 		qfront := queue[0]
+
+// 		for _, room := range qfront.adjacent {
+// 			if !room.visited && doesContainRoom(room.adjacent, g.getRoom(EndR).key) {
+
+// 				room.visited = true
+// 				room.path = append(qfront.path, room.key)
+// 				queue = append(queue, room)
+
+// 			} else {
+
+// 				fmt.Println(qfront.path)
+// 				break
+
+// 				// for _, nbr := range r.adjacent {
+
+// 				// 	/* want to get rid of the link between start and the first element of the path that
+// 				// 	leads to end*/
+
+// 				// 	if nbr.key == qfront.path[0] {
+
+// 				// 		RemoveIndex(r.adjacent, nbr.key)
+
+// 				// 		break
+// 				// 	}
+
+// 			}
+// 			queue = queue[1:]
+
+// 		}
+
+// 	}
+
+// 	fmt.Println()
+// }
+
+// func BFS(r *Room, g Graph) {
+
+// 	//queue variable, procedurally populated with rooms yet to be visited
+// 	var queue []*Room
+
+// 	//set start room as visited
+// 	r.visited = true
+
+// 	//initialise queue with start room
+// 	queue = append(queue, r)
+
+// 	//for len(r.adjacent) > 0 {
+// 	fmt.Println("turn")
+// 	//fmt.Println("Queue", queue)
+// 	//checks the queue for a non-zero value
+// 	for len(queue) > 0 {
+// 		for !contains(queue, g.getRoom(EndR).key) {
+// 			//qfront := queue[0]
+
+// 			//this loop is solely for visualisation purposes
+// 			// for _, v := range qfront.adjacent {
+// 			// 	fmt.Print(v.key)
+// 			// }
+// 			// fmt.Println()
+// 			for _, room := range queue[0].adjacent {
+// 				if !room.visited {
+// 					room.visited = true
+// 					room.path = append(queue[0].path, room.key)
+// 					fmt.Println("QFront:\n", queue[0].key)
+// 					fmt.Println("Path:", room.path)
+// 					queue = append(queue, room)
+// 					// fmt.Println(queue)
+// 				}
+// 				for _, v := range queue {
+// 					fmt.Print(v.key, "\t")
+// 				}
+// 				// if checkEnd(g, room) {
+// 				// 	fmt.Println(room.path)
+// 				// 	os.Exit(0)
+// 				// }
+// 			}
+// 			queue = queue[1:]
+
+// 			//checking if the end room has been queued/reached
+// 			if doesContainRoom(queue, g.getRoom(EndR).key) {
+// 				//fmt.Println("Queue when end reached")
+// 				for _, nbr := range g.rooms {
+// 					nbr.visited = false
+// 				}
+// 				fmt.Println("End reached:", queue[0].path)
+
+// 				//iterating through start room's adjacents and removing the lead room
+// 				for i := 0; i < len(g.getRoom(StartR).adjacent); i++ {
+// 					if r.adjacent[i].key == queue[0].path[0] {
+// 						//fmt.Println("First home:", r.adjacent[i].key, "\t")
+// 						// RemoveRoomIndex(g.getRoom(StartR).adjacent, qfront.key)
+// 						// for i := 0; i < len(r.adjacent); i++ {
+// 						// if r.adjacent[i].key == qfront.path[0] {
+// 						//fmt.Println("First home:", r.adjacent[i].key, "\t")
+// 						r.adjacent = append(r.adjacent[:i], r.adjacent[i+1:]...)
+
+// 						// fmt.Println("Start's adjacents:", r.adjacent)
+// 						for _, v := range r.adjacent {
+// 							fmt.Print(v.key, "\t")
+// 						}
+// 						fmt.Println()
+// 					}
+// 					// fmt.Println("test1", r.adjacent[i].key)
+// 					// if queue[0] == g.getRoom(StartR) && len(queue) == 1 {
+// 					// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
+// 					// } else {
+// 					queue = queue[1:]
+// 					// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
+// 					// }
+// 				}
+// 				fmt.Println("LEVEL TEST ##########")
+// 				//continue
+// 				//BFS(g.getRoom(StartR), g)
+// 			}
+
+// 			// fmt.Println("\nQUEUE BEFORE")
+// 			// for _, v := range queue {
+// 			// 	fmt.Print(v.key)
+// 			// 	}
+// 			// 	fmt.Println()
+// 			//queue = queue[1:]
+
+// 			// 	fmt.Println("\nQUEUE AFTER")
+// 			// 	for _, v := range queue {
+// 			// 	fmt.Print(v.key)
+// 			// 	}
+// 			// 	fmt.Println()
+// 		}
+// 		BFS(g.getRoom(StartR), g)
+// 		//sos.Exit(0)
+// 		fmt.Println("turn2")
+
+// 	}
+// }
+
 func BFS(r *Room, g Graph) {
 
+	//sRoom := g.getRoom(StartR)
 	//queue variable, procedurally populated with rooms yet to be visited
 	var queue []*Room
 
@@ -326,9 +556,19 @@ func BFS(r *Room, g Graph) {
 	//initialise queue with start room
 	queue = append(queue, r)
 
+	for _, v := range queue {
+		fmt.Println("P2", v.key, "\t")
+		fmt.Println(queue[0].adjacent[0].key)
+
+	}
+
+	fmt.Println("QQQ:", queue[0].key)
+	//fmt.Println("Queue", queue)
 	//checks the queue for a non-zero value
-	for len(queue) > 0 {
+	// for len(queue) > 0 {
+	for !contains(queue, g.getRoom(EndR).key) {
 		qfront := queue[0]
+		fmt.Println("QF:", qfront.key)
 
 		//this loop is solely for visualisation purposes
 		// for _, v := range qfront.adjacent {
@@ -339,28 +579,74 @@ func BFS(r *Room, g Graph) {
 			if !room.visited {
 				room.visited = true
 				room.path = append(qfront.path, room.key)
+				fmt.Println("QFront:\n", qfront.key)
+				fmt.Println("Path:", room.path)
 				queue = append(queue, room)
+				// fmt.Println(queue)
+			}
+			for _, v := range queue {
+				fmt.Print(v.key, "\t")
 			}
 			// if checkEnd(g, room) {
 			// 	fmt.Println(room.path)
 			// 	os.Exit(0)
 			// }
 		}
+		queue = queue[1:]
+
+		//checking if the end room has been queued/reached
 		if doesContainRoom(queue, g.getRoom(EndR).key) {
-			fmt.Println(qfront.path)
+			//fmt.Println("Queue when end reached")
+			for _, room := range g.rooms {
+				room.visited = false
+			}
+			fmt.Println("End reached:", qfront.path)
+
+			//iterating through start room's adjacents and removing the lead room
 			for i := 0; i < len(r.adjacent); i++ {
 				if r.adjacent[i].key == qfront.path[0] {
+					//fmt.Println("First home:", r.adjacent[i].key, "\t")
 					r.adjacent = append(r.adjacent[:i], r.adjacent[i+1:]...)
+
+					// fmt.Println("Start's adjacents:", r.adjacent)
+					for _, v := range r.adjacent {
+						fmt.Print(v.key, "\t")
+					}
+					fmt.Println()
 				}
-				fmt.Println("test1", r.adjacent[i].key)
+				// fmt.Println("test1", r.adjacent[i].key)
+				// if queue[0] == g.getRoom(StartR) && len(queue) == 1 {
+				// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
+				// } else {
+				//queue = queue[1:]
+				// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
+				// }
 			}
-			break
+			fmt.Println("#### LEVEL TEST ####")
+			fmt.Println(len(r.adjacent))
+			for _, v := range r.adjacent {
+				fmt.Println(v.key, "\t")
+			}
+			BFS(r, Graph{g.rooms})
+
 		}
-		queue = queue[1:]
+
+		// fmt.Println("\nQUEUE BEFORE")
 		// for _, v := range queue {
-		// fmt.Print(v.key)
-		// }
-		fmt.Println()
+		// 	fmt.Print(v.key)
+		// 	}
+		// 	fmt.Println()
+		//queue = queue[1:]
+
+		// 	fmt.Println("\nQUEUE AFTER")
+		// 	for _, v := range queue {
+		// 	fmt.Print(v.key)
+		// 	}
+		// 	fmt.Println()
 	}
 
 }
+
+// Delete all the edges and the rooms once a path to the end has been found that uses them
+// Changed the condition so that when we build double links, we make sure there's no double links with start
+//
