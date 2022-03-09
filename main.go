@@ -679,6 +679,8 @@ func DeleteEdge(r *Room, g Graph) {
 
 func BFS(r *Room, g Graph) {
 
+	var vPaths [][]string
+
 	//sRoom := g.getRoom(StartR)
 	//queue variable, procedurally populated with rooms yet to be visited
 	var queue []*Room
@@ -734,6 +736,7 @@ func BFS(r *Room, g Graph) {
 				room.visited = false
 			}
 			fmt.Println("End reached:", qfront.path)
+			vPaths = append(vPaths, qfront.path)
 
 			//iterating through start room's adjacents and removing the lead room
 			for i := 0; i < len(r.adjacent); i++ {
@@ -762,35 +765,49 @@ func BFS(r *Room, g Graph) {
 			for _, v := range r.adjacent {
 				fmt.Println(v.key, "\t")
 			}
-			if len(g.getRoom(StartR).adjacent) == 1 {
-				for _, r := range g.getRoom(StartR).adjacent {
-					if len(r.adjacent) == 0 {
-						break
-					}
-				}
+			fmt.Println("len of adj list", len(g.getRoom(StartR).adjacent))
+			//if len(g.getRoom(StartR).adjacent) == 1 {
+			// for _, r := range g.getRoom(StartR).adjacent {
+			// 	if len(r.adjacent) == 0 {
+			// 		break
+			// 	}
 
-			} else if len(g.getRoom(StartR).adjacent) == 0 {
+			// }
+
+			if len(g.getRoom(StartR).adjacent) == 0 {
 				break
 			} else {
-				BFS(r, Graph{g.rooms})
+				for i, r := range g.getRoom(StartR).adjacent {
+					if len(r.adjacent) == 1 && (r.adjacent[i].key) == g.getRoom(StartR).key {
+						break
+					} else {
+						BFS(r, Graph{g.rooms})
 
+					}
+					// } else if {
+					// 	BFS(r, Graph{g.rooms})
+
+					// }
+				}
+
+				// fmt.Println("\nQUEUE BEFORE")
+				// for _, v := range queue {
+				// 	fmt.Print(v.key)
+				// 	}
+				// 	fmt.Println()
+				//queue = queue[1:]
+
+				// 	fmt.Println("\nQUEUE AFTER")
+				// 	for _, v := range queue {
+				// 	fmt.Print(v.key)
+				// 	}
+				// 	fmt.Println()
+			}
+			for _, v := range vPaths {
+				fmt.Println("Finale: ", v)
 			}
 		}
-
-		// fmt.Println("\nQUEUE BEFORE")
-		// for _, v := range queue {
-		// 	fmt.Print(v.key)
-		// 	}
-		// 	fmt.Println()
-		//queue = queue[1:]
-
-		// 	fmt.Println("\nQUEUE AFTER")
-		// 	for _, v := range queue {
-		// 	fmt.Print(v.key)
-		// 	}
-		// 	fmt.Println()
 	}
-
 }
 
 // fmt.Println("\nQUEUE BEFORE")
