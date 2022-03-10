@@ -420,6 +420,17 @@ func BFS(r *Room, g Graph) {
 
 	}
 
+	// checks if there is a link between start and end directly
+	for i, v := range g.getRoom(StartR).adjacent {
+		if v.key == g.getRoom(EndR).key {
+			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR).key)
+			vPaths = append(vPaths, g.getRoom(EndR).path)
+			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
+			fmt.Println("End reached --------------------------------------------------------------------->", g.getRoom(StartR).path)
+		}
+		//continue
+	}
+
 	fmt.Println("QQQ:", queue[0].key)
 	//fmt.Println("Queue", queue)
 	//checks the queue for a non-zero value
