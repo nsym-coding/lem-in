@@ -299,6 +299,58 @@ func DFS(r *Room, g Graph) {
 	}
 }
 
+// Depth first search function that operates recursively
+func DFSBFS(r *Room, g Graph) bool {
+
+	//vList := []string{}
+	sRoom := g.getRoom(StartR)
+
+	// set the room being checked visited status to true
+	if r.key != EndR {
+		r.visited = true
+
+		// append the r key to the visited list
+		//vList = append(vList, r.key)
+		// range through the neighbours of the r
+		for _, nbr := range r.adjacent {
+			if !nbr.visited {
+				/* for each neighbour that hasn't been visited,
+				- append their key to the visited slice,
+				- then apply dfs to them recursively,
+				- then append their key to their path value
+				*/
+
+				//fmt.Println("*", vList)
+				nbr.path = append(r.path, nbr.key)
+				if doesContain(EndR, nbr.path) {
+					fmt.Println(nbr.path)
+				}
+				//fmt.Println(nbr.path)
+				//vList = append(vList, nbr.key)
+				DFS(nbr, Graph{g.rooms})
+
+			}
+
+		}
+
+	} else {
+		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
+			// vList = append(vList, r.key)
+			//fmt.Println("*", vList)
+			sRoom.adjacent = sRoom.adjacent[1:]
+
+			DFS(sRoom, Graph{g.rooms})
+
+			// } else {
+			// 	// vList = append(vList, r.key)
+			// 	//fmt.Println("*", vList)
+			// }
+		}
+		return true
+	}
+	return false
+}
+
 // Function that initialises that DFS algorithm by taking the target graph as an argument
 // func dfsStart(g *Graph) {
 // 	DFS(g.getRoom(StartR))
@@ -388,6 +440,7 @@ func BFS(r *Room, g Graph) {
 			for _, v := range queue {
 				fmt.Print(v.key, "\t")
 			}
+
 			// if checkEnd(g, room) {
 			// 	fmt.Println(room.path)
 			// 	os.Exit(0)
@@ -409,7 +462,7 @@ func BFS(r *Room, g Graph) {
 			for _, room := range g.rooms {
 				room.visited = false
 			}
-			fmt.Println("End reached:", qfront.path)
+			fmt.Println("End reached--------------------------------------------------------------------->:", qfront.path)
 			vPaths = append(vPaths, qfront.path)
 
 			//iterating through start room's adjacents and removing the lead room
@@ -455,16 +508,14 @@ func BFS(r *Room, g Graph) {
 				break
 			} else if len(g.getRoom(StartR).adjacent) == 1 {
 				fmt.Println("start has 1 ------")
-				for _, v := range g.getRoom(StartR).adjacent[0].adjacent {
-
-					if v.key != g.getRoom(EndR).key {
-						break
-
-					} else {
-						fmt.Println("loop 7")
-						BFS(g.getRoom(StartR), Graph{g.rooms})
-					}
+				if !DFSBFS(g.getRoom(StartR).adjacent[0], Graph{}) {
+					break
 				}
+				// } else {
+				// 	fmt.Println("loop 7")
+				// 	BFS(g.getRoom(StartR), Graph{g.rooms})
+				// }
+
 			} else if len(g.getRoom(StartR).adjacent) == 2 {
 				for _, froom := range g.getRoom(StartR).adjacent {
 					for _, sroom := range froom.adjacent {
@@ -482,9 +533,9 @@ func BFS(r *Room, g Graph) {
 			BFS(g.getRoom(StartR), Graph{g.rooms})
 			//queue = queue[1:]
 		}
-		for _, v := range vPaths {
-			fmt.Println("Finale: ", v)
-		}
+	}
+	for _, v := range vPaths {
+		fmt.Println("Finale: ", v)
 	}
 }
 
