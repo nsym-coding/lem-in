@@ -267,50 +267,42 @@ func Output() {
 	// if room is unoccupied, add ant into moving slice
 	// if all rooms upto that point are occupied, turn done, println
 	for _, path := range vp {
-		for _, room := range path {
-			if !occupied[room] {
+		for v, room := range path {
+			if !occupied[room] && room == path[0] {
 				movingAnts = append(movingAnts, unmovedAnts[0])
 				unmovedAnts = unmovedAnts[1:]
-				occupied[room] = true
 				for _, ant := range movingAnts {
 					fmt.Printf("L%v-%v ", ant, room)
+					occupied[room] = true
+					// if occupied[room] && room == EndR {
+					// 	movingAnts = movingAnts[1:]
+					// 	fmt.Print(movingAnts)
+					// }
+				}
+				// occupied[room] = false
+				// for turn
+				fmt.Println()
+			} else if !occupied[room] {
+				movingAnts = append(movingAnts, unmovedAnts[0])
+				unmovedAnts = unmovedAnts[1:]
+				// occupied[path[v+1]] = true
+				for _, ant := range movingAnts {
+					fmt.Printf("L%v-%v ", ant, room)
+					occupied[room] = true
+					// fmt.Println(occupied)
+					occupied[path[v-1]] = false
+					room = path[v-1]
+
+					// fmt.Println(occupied)
 					// if ant goes to the end room, remove it from moving ants
 					if occupied[room] && room == EndR {
 						movingAnts = movingAnts[1:]
 						fmt.Print(movingAnts)
 					}
 				}
-
-				// for turn
-				fmt.Println()
 				occupied[room] = false
+				fmt.Println()
 			}
 		}
 	}
-
-	// for i := 1; i <= numOfAnts; i++ {
-	// 	for _, path := range vp {
-	// 		for _, room := range path {
-	// 			// if room is occupied and all previous rooms are occupied, turn complete (println)
-	// 			//endR is the end room
-	// 			// occupied[room] = true
-	// 			if !occupied[room] {
-	// 				fmt.Printf("L%v-%v ", i, room)
-	// 				occupied[room] = true
-
-	// 			}
-
-	// 			if occupied[room] && room == vp[0][0] {
-	// 				occupied[room] = false
-	// 				// continue
-	// 			}
-	// 			if occupied[room] /* and all previous rooms occupied (new turn)*/ {
-	// 				occupied[room] = false
-	// 				fmt.Println()
-	// 			}
-	// 			// 	fmt.Printf("L%v-%v ", i+1, path[v-1])
-	// 		}
-	// 	}
-	// }
-	// fmt.Println(vp)
 }
