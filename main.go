@@ -268,41 +268,47 @@ func Output() {
 	// if all rooms upto that point are occupied, turn done, println
 	for _, path := range vp {
 		for v, room := range path {
-			if !occupied[room] && room == path[0] {
+			if !occupied[room] {
 				movingAnts = append(movingAnts, unmovedAnts[0])
 				unmovedAnts = unmovedAnts[1:]
 				for _, ant := range movingAnts {
-					fmt.Printf("L%v-%v ", ant, room)
-					occupied[room] = true
-					// if occupied[room] && room == EndR {
-					// 	movingAnts = movingAnts[1:]
-					// 	fmt.Print(movingAnts)
-					// }
-				}
-				// occupied[room] = false
-				// for turn
-				fmt.Println()
-			} else if !occupied[room] {
-				movingAnts = append(movingAnts, unmovedAnts[0])
-				unmovedAnts = unmovedAnts[1:]
-				// occupied[path[v+1]] = true
-				for _, ant := range movingAnts {
-					fmt.Printf("L%v-%v ", ant, room)
-					occupied[room] = true
-					// fmt.Println(occupied)
-					occupied[path[v-1]] = false
-					room = path[v-1]
-
-					// fmt.Println(occupied)
-					// if ant goes to the end room, remove it from moving ants
-					if occupied[room] && room == EndR {
+					if room == EndR {
 						movingAnts = movingAnts[1:]
 						fmt.Print(movingAnts)
 					}
+					fmt.Printf("L%v-%v ", ant, room)
+					occupied[room] = true
+					if room != path[0] {
+						room = path[v-1]
+					}
+					// fmt.Println(occupied)
 				}
 				occupied[room] = false
+				// fmt.Println(occupied)
+				// for turn
 				fmt.Println()
 			}
+			// } else if !occupied[room] {
+			// 	movingAnts = append(movingAnts, unmovedAnts[0])
+			// 	unmovedAnts = unmovedAnts[1:]
+			// 	// occupied[path[v+1]] = true
+			// 	for _, ant := range movingAnts {
+			// 		fmt.Printf("L%v-%v ", ant, room)
+			// 		occupied[room] = true
+			// 		// fmt.Println(occupied)
+			// 		occupied[path[v-1]] = false
+			// 		room = path[v-1]
+
+			// 		// fmt.Println(occupied)
+			// 		// if ant goes to the end room, remove it from moving ants
+			// 		if occupied[room] && room == EndR {
+			// 			movingAnts = movingAnts[1:]
+			// 			fmt.Print(movingAnts)
+			// 		}
+			// 	}
+			// 	occupied[room] = false
+			// 	fmt.Println()
+			// }
 		}
 	}
 }
