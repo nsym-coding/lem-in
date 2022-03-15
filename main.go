@@ -272,7 +272,7 @@ func DFS(r *Room, g Graph) {
 
 				nbr.path = append(r.path, nbr.key)
 				if doesContain(EndR, nbr.path) {
-					//fmt.Println(nbr.path)
+					// fmt.Println(nbr.path)
 					pathSlice = append(pathSlice, nbr.path)
 				}
 				// fmt.Println(nbr.path)
@@ -305,17 +305,19 @@ func output(pathSlice [][]string) {
 	// fmt.Println(len(pathSlice))
 	ants := NumAnts(readAntsFile("ants.txt"))
 	unvisited := true
+	var movingAnts []string
 
 	for _, path := range pathSlice {
-		for spot, node := range path {
+		for _, node := range path {
 			for i := 1; i <= ants; i++ {
 				if unvisited {
-					unvisited = false
 					fmt.Printf("L%v-%v, ", i, node)
-					if !unvisited {
-						fmt.Printf("L%v-%v, ", i, path[spot+1])
-					}
+					movingAnts = append(movingAnts, "L%v")
+					// if !unvisited {
+					// 	fmt.Printf("L%v-%v, ", i, path[spot+1])
+					// }
 				}
+				// fmt.Printf("L%v-%v, ", i, path[spot+1])
 			}
 		}
 	}
