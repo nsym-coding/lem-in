@@ -271,10 +271,16 @@ func Output() {
 			if !occupied[room] {
 				movingAnts = append(movingAnts, unmovedAnts[0])
 				unmovedAnts = unmovedAnts[1:]
+				occupied[room] = true
 				for _, ant := range movingAnts {
 					fmt.Printf("L%v-%v ", ant, room)
-					occupied[room] = true
+					// if ant goes to the end room, remove it from moving ants
+					if occupied[room] && room == EndR {
+						movingAnts = movingAnts[1:]
+						fmt.Print(movingAnts)
+					}
 				}
+
 				// for turn
 				fmt.Println()
 				occupied[room] = false
