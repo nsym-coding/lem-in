@@ -240,42 +240,71 @@ func DFS(r *Room, g Graph) {
 
 }
 
-func Output() string {
+func Output() {
 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
 	// valid paths from dfs function
+	unmovedAnts := []string{}
+
+	for i := 1; i <= numOfAnts; i++ {
+		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+	}
+	// fmt.Println(unmovedAnts)
 	vp := validPaths
-	// occupied := false
 
 	// map to hold each room with visited bool
 	// append each path into the map
 
-	emptyRooms := make(map[string]bool)
+	occupied := make(map[string]bool)
 
 	for _, pathslice := range vp {
 		for _, room := range pathslice {
-			emptyRooms[room] = true
+			occupied[room] = false
 		}
 	}
 
-	fmt.Println(emptyRooms)
+	movingAnts := []string{}
 
+	// if room is unoccupied, add ant into moving slice
+	// if all rooms upto that point are occupied, turn done, println
 	for _, path := range vp {
 		for _, room := range path {
-			for i := 1; i <= numOfAnts; i++ {
-				// if the empty room is true we want the same ant to move down the path first
-				if emptyRooms[room] {
-					fmt.Printf("L%v-%v ", i, room)
-					// emptyRooms[room] = false
-					// fmt.Printf("L%v-%v ", i, path[v+1]
+			if !occupied[room] {
+				movingAnts = append(movingAnts, unmovedAnts[0])
+				unmovedAnts = unmovedAnts[1:]
+				for _, ant := range movingAnts {
+					fmt.Printf("L%v-%v ", ant, room)
+					occupied[room] = true
 				}
-
-				// add condition for end room and room previous and after
-				// fmt.Println()
+				// for turn
+				fmt.Println()
+				occupied[room] = false
 			}
-			// emptyRooms[room] = true
 		}
 	}
-	fmt.Println(emptyRooms)
+
+	// for i := 1; i <= numOfAnts; i++ {
+	// 	for _, path := range vp {
+	// 		for _, room := range path {
+	// 			// if room is occupied and all previous rooms are occupied, turn complete (println)
+	// 			//endR is the end room
+	// 			// occupied[room] = true
+	// 			if !occupied[room] {
+	// 				fmt.Printf("L%v-%v ", i, room)
+	// 				occupied[room] = true
+
+	// 			}
+
+	// 			if occupied[room] && room == vp[0][0] {
+	// 				occupied[room] = false
+	// 				// continue
+	// 			}
+	// 			if occupied[room] /* and all previous rooms occupied (new turn)*/ {
+	// 				occupied[room] = false
+	// 				fmt.Println()
+	// 			}
+	// 			// 	fmt.Printf("L%v-%v ", i+1, path[v-1])
+	// 		}
+	// 	}
+	// }
 	// fmt.Println(vp)
-	return "hello"
 }
