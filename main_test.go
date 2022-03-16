@@ -40,3 +40,20 @@ func TestEndRoom(t *testing.T) {
 		t.Errorf("got %q, wanted: %q", got, want)
 	}
 }
+
+func Test_output(t *testing.T) {
+	type args struct {
+		pathSlice [][]string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			output(tt.args.pathSlice)
+		})
+	}
+}

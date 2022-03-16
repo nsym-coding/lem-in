@@ -304,25 +304,50 @@ func DFS(r *Room, g Graph) {
 func output(pathSlice [][]string) {
 	// fmt.Println(len(pathSlice))
 	ants := NumAnts(readAntsFile("ants.txt"))
-	unvisited := true
-	var movingAnts []string
+
+	var unmovedAnts []string
+
+	for i := 1; i <= ants; i++ {
+		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+	}
+
+	// map to hold each visited rooms
+	occupied := make(map[string]bool)
 
 	for _, path := range pathSlice {
 		for _, node := range path {
-			for i := 1; i <= ants; i++ {
-				if unvisited {
-					fmt.Printf("L%v-%v, ", i, node)
-					movingAnts = append(movingAnts, "L%v")
-					// if !unvisited {
-					// 	fmt.Printf("L%v-%v, ", i, path[spot+1])
-					// }
+			occupied[node] = false
+		}
+	}
+
+	// if room is unoccupied, add ant into movingAnt slice
+	// if all rooms up to that point are occupied, turn done, println
+	var movingAnts []string
+
+	for _, path := range pathSlice {
+		for v, node := range path {
+			if !occupied[node] {
+				movingAnts = append(movingAnts, unmovedAnts[0])
+				unmovedAnts = unmovedAnts[1:]
+				//fmt.Print(unmovedAnts)
+				for _, ant := range movingAnts {
+					if node == EndR {
+						movingAnts = movingAnts[1:]
+						//fmt.Print(movingAnts)
+					}
+					fmt.Printf("L%v-%v ", ant, node)
+					//occupied[node] = true
+					if node != path[0] {
+						node = path[v-1]
+					}
 				}
-				// fmt.Printf("L%v-%v, ", i, path[spot+1])
+				occupied[node] = false
+				// turn
+				fmt.Println()
 			}
 		}
 	}
 }
-
 // Function that initialises that DFS algorithm by taking the target graph as an argument
 // func dfsStart(g *Graph) {
 // 	DFS(g.getRoom(StartR))
