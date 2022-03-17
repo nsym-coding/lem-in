@@ -175,11 +175,23 @@ func main() {
 	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	for _, r := range validPaths {
-		for _, f := range r {
-			fmt.Println(f.key)
-		}
-	}
+	//fmt.Println(validPaths)
+
+	// for _, r := range bfsPaths {
+	// 	for _, f := range r {
+	// 		fmt.Println("BFS Paths ----> ", f.key)
+	// 	}
+	// }
+
+	// for _, r := range dfsPaths {
+	// 	for _, f := range r {
+	// 		fmt.Println("DFS Paths ----> ", f.key)
+	// 	}
+	// }
+
+	//AntPath()
+
+	PathSelection(bfsPaths, dfsPaths)
 
 	//dfsGraph.Print()
 
@@ -250,6 +262,10 @@ func (g *Graph) Print() {
 // global variable which will store all of the valid paths in a slice of slices of string.
 var validPaths [][]*Room
 
+// Slices to hold paths from both algos for comparison
+var dfsPaths [][]*Room
+var bfsPaths [][]*Room
+
 // Depth First Search algorithm that operates recursively
 func DFS(r *Room, g Graph) {
 
@@ -275,10 +291,10 @@ func DFS(r *Room, g Graph) {
 				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					for _, r := range nbr.path {
-						fmt.Println("DFS Finale: ----->", r.key)
-					}
-					validPaths = append(validPaths, nbr.path)
+					// for _, r := range nbr.path {
+					// 	fmt.Println("DFS Finale: ----->", r.key)
+					// }
+					dfsPaths = append(dfsPaths, nbr.path)
 
 				}
 				//fmt.Println(nbr.path)
@@ -331,7 +347,7 @@ func DFSBFS(r *Room, g Graph) bool {
 				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					fmt.Println("dfs print check", nbr.path)
+					//fmt.Println("dfs print check", nbr.path)
 
 					return true
 
@@ -499,14 +515,81 @@ func BFS(r *Room, g Graph) {
 		}
 	}
 	for _, v := range vPaths {
-		fmt.Printf("BFS Finale: ----> ")
-		for _, r := range v {
-			fmt.Printf("%v ", r.key)
-		}
+		v = append(v, g.getRoom(EndR))
+		bfsPaths = append(bfsPaths, v)
+		//fmt.Printf("BFS Finale: ----> ")
+		// for _, r := range v {
+		// 	fmt.Printf("%v ", r.key)
+		// }
 		fmt.Println()
 	}
 
 }
+
+func PathSelection(b [][]*Room, d [][]*Room) {
+	bfsPathNum := len(bfsPaths)
+	dfsPathNum := len(dfsPaths)
+
+	if bfsPathNum > dfsPathNum {
+		validPaths = append(validPaths, bfsPaths...)
+	} else if dfsPathNum > bfsPathNum {
+		validPaths = append(validPaths, dfsPaths...)
+	} else if dfsPathNum == bfsPathNum {
+
+		bfscounter := 0
+		dfscounter := 0
+
+		for _, path := range bfsPaths {
+
+			bfscounter += len(path)
+
+		}
+
+		for _, path := range dfsPaths {
+			dfscounter += len(path)
+		}
+
+		if bfscounter > dfscounter {
+			validPaths = append(validPaths, bfsPaths...)
+		} else if dfscounter > bfscounter {
+			validPaths = append(validPaths, dfsPaths...)
+		} else if bfscounter == dfscounter {
+			validPaths = append(validPaths, bfsPaths...)
+		}
+
+	}
+	//fmt.Println(bfsPathNum)
+	//fmt.Println(dfsPathNum)
+	for _, path := range validPaths {
+		for _, room := range path {
+			fmt.Println(room.key)
+		}
+	}
+}
+
+// func AntPath() {
+
+// 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
+// 	vp := validPaths
+
+// 	unmovedAnts := []string{}
+// 	movingAnts := []string{}
+
+// 	for i := 0; i <= numOfAnts; i++ {
+// 		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+// 	}
+
+// 	for _, path := range vp{
+// 		for _, room := range path{
+// 			if !room.occupied{
+// 				if len(movingAnts) > 1{
+// 					movingAnts[0]
+// 				}
+// 			}
+// 		}
+// 	}
+
+// }
 
 // func Output() {
 // 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
