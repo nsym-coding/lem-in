@@ -19,6 +19,7 @@ type Room struct {
 	adjacent []*Room
 	path     []*Room
 	visited  bool
+	occupied bool
 }
 
 // Reads file and returns a string slice
@@ -174,6 +175,12 @@ func main() {
 	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
+	for _, r := range validPaths {
+		for _, f := range r {
+			fmt.Println(f.key)
+		}
+	}
+
 	//dfsGraph.Print()
 
 	//Output()
@@ -268,7 +275,9 @@ func DFS(r *Room, g Graph) {
 				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					fmt.Println("DFS Finale: ----->", nbr.path)
+					for _, r := range nbr.path {
+						fmt.Println("DFS Finale: ----->", r.key)
+					}
 					validPaths = append(validPaths, nbr.path)
 
 				}
@@ -490,7 +499,11 @@ func BFS(r *Room, g Graph) {
 		}
 	}
 	for _, v := range vPaths {
-		fmt.Println("BFS Finale: ---->", v)
+		fmt.Printf("BFS Finale: ----> ")
+		for _, r := range v {
+			fmt.Printf("%v ", r.key)
+		}
+		fmt.Println()
 	}
 
 }
