@@ -474,43 +474,54 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 }
 
 //error checking for duplicated starting points
-// func PathDupeCheck(path [][]*Room) [][]*Room{
+func PathDupeCheck(path [][]*Room) [][]*Room {
 
-// 	var result [][]*Room
-// 	var compare [][]*Room
+	var result [][]*Room
+	//	var compare [][]*Room
+	var output [][]*Room
 
-// 	if len(path) == 1{
-// 		return path
-// 	} else if len(path) == 2{
-// 		result = path[0]
-// 		compare = path[1]
+	if len(path) == 1 {
+		return path
+	}
 
-// 		if result[0] != compare[0]{
-// 			return path
-// 		}else{
+	if len(path) == 2 {
+		if path[0][0].key != path[1][0].key {
+			return path
+		} else if len(path[0]) <= len(path[1]) {
+			output = append(output, path[0])
+			return output
+		}
+		output = append(output, path[1])
+		return output
+	}
 
-// 		}
+	if len(path) > 2 {
 
-// 	}else{
-// 		result += path[0]
-// 		path = path[1:]
+		output = append(output, path[0])
+		result = path[1:]
 
-// 		for le
+		for len(result) > 0 {
 
-// 			for _, path := range path {
-// 	  for _, room := range path {
-// 			fmt.Println(path[0].key)
-// 		}
+			if output[len(output)-1][0].key != result[0][0].key {
+				output = append(output, result[0])
+				result = result[1:]
+			} else {
 
-// 	}
+				if len(output[len(output)-1]) <= len(result[0]) {
+					result = result[1:]
+				}
+				output = output[:len(output)-1]
+				output = append(output, result[0])
+				result = result[1:]
 
-// for _ , slice := range path {
-// 	fmt.Println
-// }
+			}
 
-// 	}
+		}
 
-//  }
+	}
+	return output
+
+}
 
 func main() {
 
@@ -560,11 +571,11 @@ func main() {
 	// 	fmt.Println()
 	// }
 
-	// for _, path := range PathSelection(bfsPaths, dfsPaths) {
-	// //	for _, room := range path {
-	// 		fmt.Println(path[0].key)
-	// 	}
+	for _, path := range PathSelection(bfsPaths, dfsPaths) {
+		//	for _, room := range path {
+		fmt.Println(path[0].key)
+	}
 
-	fmt.Println(PathSelection(bfsPaths, dfsPaths)[0])
+	//fmt.Println(PathSelection(bfsPaths, dfsPaths)[2:])
 
 }
