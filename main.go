@@ -273,9 +273,9 @@ func DFS(r *Room, g Graph) {
 
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					for _, r := range nbr.path {
-						fmt.Println(r.key)
-					}
+					// for _, r := range nbr.path {
+					// 	fmt.Println(r.key)
+					// }
 					pathSlice = append(pathSlice, nbr.path)
 				}
 				// fmt.Println(nbr.path)
@@ -313,7 +313,7 @@ func output(pathSlice [][]*Room) {
 	for i := 1; i <= ants; i++ {
 		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
 	}
-
+	// fmt.Println(unmovedAnts)
 	// map to hold each visited rooms
 	// occupied := make(map[string]bool)
 
@@ -333,22 +333,29 @@ func output(pathSlice [][]*Room) {
 				if !node.occupied {
 					movingAnts = append(movingAnts, unmovedAnts[0])
 					unmovedAnts = unmovedAnts[1:]
-					// fmt.Print(unmovedAnts)
+					// fmt.Println(unmovedAnts)
+					// fmt.Println(movingAnts)
+					fmt.Printf("%v room is unoccupied\n",node.key)
 					for _, v := range movingAnts {
-						node.occupied = true
-						// fmt.Print(v)
-						// 	if node == EndR {
-						// 		movingAnts = movingAnts[1:]
-						// 		//fmt.Print(movingAnts)
-						// 	}
 						fmt.Printf("L%v-%v ", v, node.key)
-						node.occupied = false
+						//node.occupied = true
+						// fmt.Print(v)
+						if node.key == EndR {
+							movingAnts = movingAnts[1:]
+							// fmt.Print(movingAnts)
+						}
 						if node != path[0] {
 							node = path[i-1]
+							// fmt.Println(node.path)
 						}
-						// }
-						// occupied[node] = false
-						// // turn
+					}
+					node.occupied = true
+					// turn
+					fmt.Println()
+					// node.occupied = false
+					} else {
+					for _, v := range movingAnts {
+						fmt.Printf("%v room is occupied by ant L%v ", node.key, v)
 					}
 					fmt.Println()
 				}
