@@ -497,30 +497,48 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 
 	if len(path) > 2 {
 
+
 		output = append(output, path[0])
 		result = path[1:]
 
-		for len(result) > 0 {
+		for len(result)>0{
 
-			if output[len(output)-1][0].key != result[0][0].key {
-				output = append(output, result[0])
-				result = result[1:]
-			} else {
+		fmt.Println("len of Output ---", len(output))
+		fmt.Println("len of result -----", len(result))
 
-				if len(output[len(output)-1]) <= len(result[0]) {
-					result = result[1:]
-				}
-				output = output[:len(output)-1]
-				output = append(output, result[0])
-				result = result[1:]
+		counter := 0 
 
-			}
-
-		}
-
+for  i := 0 ; i < len(output) ; i++{
+	if result[0][0].key == output[i][0].key{
+		counter++
+		fmt.Println("-----dupe",output[i][0].key )
+		return nil
 	}
-	return output
+}
 
+	// 	for len(result) > 0 {
+
+	// 		output = append(output, result[0])
+	// 		if output[len(output)-1][0].key != result[0][0].key {
+	// 			result = result[1:]
+	// 		} else {
+
+	// 			if len(output[len(output)-1]) <= len(result[0]) {
+	// 				result = result[1:]
+	// 			}
+	// 			output = output[:len(output)-1]
+	// 			output = append(output, result[0])
+	// 			result = result[1:]
+
+	// 		}
+
+	// 	}
+
+	// }
+	// return output
+}
+	}
+	return nil 
 }
 
 func main() {
@@ -563,7 +581,7 @@ func main() {
 	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	// for _, path := range PathSelection(bfsPaths, dfsPaths) {
+	// for _, path := range PathDupeCheck(PathSelection(bfsPaths,dfsPaths)) {
 	// 	for _, room := range path {
 	// 		fmt.Print(room.key)
 	// 		fmt.Print("  ")
@@ -571,11 +589,31 @@ func main() {
 	// 	fmt.Println()
 	// }
 
-	for _, path := range PathSelection(bfsPaths, dfsPaths) {
-		//	for _, room := range path {
-		fmt.Println(path[0].key)
+	// for _, path := range PathSelection(bfsPaths, dfsPaths)[0] {
+		
+	// 	fmt.Print(path.key)
+	
+	// }
+	// fmt.Println()
+
+	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
+		for _, room := range path {
+	fmt.Print(room.key)
+}
+fmt.Println()
 	}
 
-	//fmt.Println(PathSelection(bfsPaths, dfsPaths)[2:])
+// fmt.Println(PathSelection(bfsPaths,dfsPaths)[0])
+// fmt.Println(PathSelection(bfsPaths,dfsPaths))
+
+
+// for _, paths := range PathSelection(bfsPaths,dfsPaths){
+// fmt.Println(paths)
+// }
+
+ fmt.Println(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+//fmt.Println(len(PathSelection(bfsPaths, dfsPaths)[1:]))
+
 
 }
+	
