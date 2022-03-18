@@ -434,7 +434,7 @@ func BFS(r *Room, g Graph) {
 
 }
 
-func PathSelection(bfs  [][]*Room, dfs [][]*Room)[][]*Room {
+func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 	// a = bfsPaths
 	// b = dfsPaths
 
@@ -473,7 +473,44 @@ func PathSelection(bfs  [][]*Room, dfs [][]*Room)[][]*Room {
 
 }
 
-//func PathDupeCheck(a [][]*Room)
+//error checking for duplicated starting points
+// func PathDupeCheck(path [][]*Room) [][]*Room{
+
+// 	var result [][]*Room
+// 	var compare [][]*Room
+
+// 	if len(path) == 1{
+// 		return path
+// 	} else if len(path) == 2{
+// 		result = path[0]
+// 		compare = path[1]
+
+// 		if result[0] != compare[0]{
+// 			return path
+// 		}else{
+
+// 		}
+
+// 	}else{
+// 		result += path[0]
+// 		path = path[1:]
+
+// 		for le
+
+// 			for _, path := range path {
+// 	  for _, room := range path {
+// 			fmt.Println(path[0].key)
+// 		}
+
+// 	}
+
+// for _ , slice := range path {
+// 	fmt.Println
+// }
+
+// 	}
+
+//  }
 
 func main() {
 
@@ -515,14 +552,19 @@ func main() {
 	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
+	// for _, path := range PathSelection(bfsPaths, dfsPaths) {
+	// 	for _, room := range path {
+	// 		fmt.Print(room.key)
+	// 		fmt.Print("  ")
+	// 	}
+	// 	fmt.Println()
+	// }
 
-	for _, path := range PathSelection(bfsPaths, dfsPaths) {
-		for _, room := range path {
-			fmt.Print(room.key)
-			fmt.Print("  ")
-		}
-		fmt.Println()
-	}
+	// for _, path := range PathSelection(bfsPaths, dfsPaths) {
+	// //	for _, room := range path {
+	// 		fmt.Println(path[0].key)
+	// 	}
 
+	fmt.Println(PathSelection(bfsPaths, dfsPaths)[0])
 
 }
