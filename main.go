@@ -605,5 +605,11 @@ for key , value := range dataMap{
 fmt.Println()
 }
 
+var output [][]*Room
+
+for _ , value := range dataMap{
+	output = append(output, value)
+}
+
 
 }
