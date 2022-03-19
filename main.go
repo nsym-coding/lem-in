@@ -434,10 +434,9 @@ func BFS(r *Room, g Graph) {
 
 }
 
+//returns the optimal path between bfs & dfs algos
 func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
-	// a = bfsPaths
-	// b = dfsPaths
-
+	
 	bfsPathNum := len(bfs)
 	dfsPathNum := len(dfs)
 
@@ -473,38 +472,38 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 
 }
 
-//error checking for duplicated starting points
-// func PathDupeCheck(path [][]*Room) [][]*Room {
+//error checking for duplicate starting points
+func PathDupeCheck(path [][]*Room) [][]*Room {
 
-// 	var result [][]*Room
-// 	//	var compare [][]*Room
-// 	var output [][]*Room
+	dataMap := make(map[*Room][]*Room)
 
-// 	if len(path) == 1 {
-// 		return path
-// 	}
+	for _, item := range path {
+		if value, ok := dataMap[item[0]]; !ok {
+			dataMap[item[0]] = item
+		} else {
+			if len(item) <= len(value) {
+				dataMap[item[0]] = item
 
-// 	if len(path) == 2 {
-// 		if path[0][0].key != path[1][0].key {
-// 			return path
-// 		} else if len(path[0]) <= len(path[1]) {
-// 			output = append(output, path[0])
-// 			return output
-// 		}
-// 		output = append(output, path[1])
-// 		return output
-// 	}
+			}
+		}
+	}
 
-// 	if len(path) > 2 {
+	// for key , value := range dataMap{
+	// 	fmt.Print(key.key)
+	// 	for _ , room := range value{
+	// 	fmt.Print(room.key)
+	// }
+	// fmt.Println()
+	// }
 
-// 		dataMap:=  make(map[*Room][]*Room)
+	var output [][]*Room
 
-// 		for _ , slice := range path{
-// 			dataMap[slice[0]] = slice
-// 		}
+	for _, value := range dataMap {
+		output = append(output, value)
+	}
 
-// 	}
-// }
+	return output
+}
 
 func main() {
 
@@ -543,73 +542,16 @@ func main() {
 
 	}
 
-	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	// for _, path := range PathDupeCheck(PathSelection(bfsPaths,dfsPaths)) {
-	// 	for _, room := range path {
-	// 		fmt.Print(room.key)
-	// 		fmt.Print("  ")
-	// 	}
-	// 	fmt.Println()
-	// }
+	PathDupeCheck(PathSelection(bfsPaths, dfsPaths))
 
-	// for _, path := range PathSelection(bfsPaths, dfsPaths)[0] {
-
-	// 	fmt.Print(path.key)
-
-	// }
-	// fmt.Println()
-
-	// 	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
-	// 		for _, room := range path {
-	// 	fmt.Print(room.key)
-	// }
-	// fmt.Println()
-	// 	}
-
-	// fmt.Println(PathSelection(bfsPaths,dfsPaths)[0])
-	// fmt.Println(PathSelection(bfsPaths,dfsPaths))
-
-	// for _, paths := range PathSelection(bfsPaths,dfsPaths){
-	// fmt.Println(paths)
-	// }
-
-	//fmt.Println(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
-	//fmt.Println(len(PathSelection(bfsPaths, dfsPaths)[0][0].key))
-	//fmt.Printf("%T", PathSelection(bfsPaths, dfsPaths)[0][0])
-
-	//fmt.Println(PathSelection(bfsPaths, dfsPaths)[1])
-
-	dataMap := make(map[*Room][]*Room)
-
-	//var compare [][]*Room  = PathSelection(bfsPaths, dfsPaths)[1:]
-
-	//allKeys := make(map[string]bool)
-
-	for _, item := range PathSelection(bfsPaths, dfsPaths) {
-		if value, ok := dataMap[item[0]]; !ok {
-			dataMap[item[0]] = item
-		} else {
-			if len(item) <= len(value) {
-				dataMap[item[0]] = item
-
-			}
+	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
+		for _, room := range path {
+			fmt.Print(room.key) 
+			fmt.Print(" ")
 		}
+		fmt.Println()
 	}
-for key , value := range dataMap{
-	fmt.Print(key.key)  
-	for _ , room := range value{
-	fmt.Print(room.key)
-}
-fmt.Println()
-}
-
-var output [][]*Room
-
-for _ , value := range dataMap{
-	output = append(output, value)
-}
-
 
 }
