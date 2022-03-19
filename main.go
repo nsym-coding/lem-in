@@ -597,6 +597,13 @@ func main() {
 			}
 		}
 	}
+for key , value := range dataMap{
+	fmt.Print(key.key)  
+	for _ , room := range value{
+	fmt.Print(room.key)
+}
+fmt.Println()
+}
 
-	fmt.Println(dataMap)
+
 }
