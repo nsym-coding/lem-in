@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -436,7 +437,7 @@ func BFS(r *Room, g Graph) {
 
 //returns the optimal path between bfs & dfs algos
 func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
-	
+
 	bfsPathNum := len(bfs)
 	dfsPathNum := len(dfs)
 
@@ -505,6 +506,17 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 	return output
 }
 
+//reassigns the slices in ascending (len) order
+func Reassign(a [][]*Room) [][]*Room {
+
+	sort.Slice(a, func(i, j int) bool {
+		return len(a[i]) < len(a[j])
+	})
+
+	return a
+
+}
+
 func main() {
 
 	bfsGraph := Graph{}
@@ -523,7 +535,6 @@ func main() {
 
 	}
 
-	//bfsGraph.Print()
 	BFS(bfsGraph.getRoom(StartR), bfsGraph)
 	//bfsGraph.Print()
 
@@ -544,11 +555,10 @@ func main() {
 
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	PathDupeCheck(PathSelection(bfsPaths, dfsPaths))
-
-	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
+	//Use below within the main
+	for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))) {
 		for _, room := range path {
-			fmt.Print(room.key) 
+			fmt.Print(room.key)
 			fmt.Print(" ")
 		}
 		fmt.Println()
