@@ -17,8 +17,9 @@ type Graph struct {
 type Room struct {
 	key      string
 	adjacent []*Room
-	path     []string
+	path     []*Room
 	visited  bool
+	// occupied bool
 }
 
 // Reads file and returns a string slice
@@ -114,14 +115,14 @@ func contains(s []*Room, k string) bool {
 	return false
 }
 
-func doesContain(s string, sl []string) bool {
-	for _, word := range sl {
-		if s == word {
-			return true
-		}
-	}
-	return false
-}
+// func doesContain(s string, sl []string) bool {
+// 	for _, word := range sl {
+// 		if s == word {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 func main() {
 
@@ -143,7 +144,6 @@ func main() {
 	test.Print()
 	DFS(test.getRoom(StartR), test)
 	Output()
-
 }
 
 func (g *Graph) PrintPath() {
@@ -207,7 +207,7 @@ func (g *Graph) Print() {
 }
 
 // global variable which will store all of the valid paths in a slice of slices of string.
-var validPaths [][]string
+var validPaths [][]*Room
 
 // Depth first search function that operates recursively
 func DFS(r *Room, g Graph) {
@@ -226,8 +226,8 @@ func DFS(r *Room, g Graph) {
 				- then append their key to their path value
 				*/
 
-				nbr.path = append(r.path, nbr.key)
-				if doesContain(EndR, nbr.path) {
+				nbr.path = append(r.path, nbr)
+				if contains(nbr.path, EndR) {
 					validPaths = append(validPaths, nbr.path)
 				}
 				DFS(nbr, Graph{g.rooms})
@@ -238,6 +238,12 @@ func DFS(r *Room, g Graph) {
 		DFS(sRoom, Graph{g.rooms})
 	}
 
+}
+
+type Ant struct {
+	key         string
+	path        []*Room
+	currentRoom Room
 }
 
 func Output() {
@@ -251,64 +257,31 @@ func Output() {
 	// fmt.Println(unmovedAnts)
 	vp := validPaths
 
-	// map to hold each room with visited bool
-	// append each path into the map
-
-	occupied := make(map[string]bool)
-
-	for _, pathslice := range vp {
-		for _, room := range pathslice {
-			occupied[room] = false
-		}
-	}
-
-	movingAnts := []string{}
+	// a := Ant {
+	// 	key
+	// }
+	// need to use unmoved and movingants
 
 	// if room is unoccupied, add ant into moving slice
 	// if all rooms upto that point are occupied, turn done, println
-	for _, path := range vp {
-		for v, room := range path {
-			if !occupied[room] {
-				movingAnts = append(movingAnts, unmovedAnts[0])
-				unmovedAnts = unmovedAnts[1:]
-				for _, ant := range movingAnts {
-					if room == EndR {
-						movingAnts = movingAnts[1:]
-						fmt.Print(movingAnts)
-					}
-					fmt.Printf("L%v-%v ", ant, room)
-					occupied[room] = true
-					if room != path[0] {
-						room = path[v-1]
-					}
-					// fmt.Println(occupied)
-				}
-				occupied[room] = false
-				// fmt.Println(occupied)
-				// for turn
-				fmt.Println()
-			}
-			// } else if !occupied[room] {
-			// 	movingAnts = append(movingAnts, unmovedAnts[0])
-			// 	unmovedAnts = unmovedAnts[1:]
-			// 	// occupied[path[v+1]] = true
-			// 	for _, ant := range movingAnts {
-			// 		fmt.Printf("L%v-%v ", ant, room)
-			// 		occupied[room] = true
-			// 		// fmt.Println(occupied)
-			// 		occupied[path[v-1]] = false
-			// 		room = path[v-1]
-
-			// 		// fmt.Println(occupied)
-			// 		// if ant goes to the end room, remove it from moving ants
-			// 		if occupied[room] && room == EndR {
-			// 			movingAnts = movingAnts[1:]
-			// 			fmt.Print(movingAnts)
-			// 		}
-			// 	}
-			// 	occupied[room] = false
-			// 	fmt.Println()
-			// }
-		}
-	}
+	// for range unmovedAnts {
+	// 	for _, path := range vp {
+	// 		for v, room := range path {
+	// 			movingAnts = append(movingAnts, unmovedAnts[0])
+	// 			unmovedAnts = unmovedAnts[1:]
+	// 			for i, ant := range movingAnts {
+	// 				if room == EndR {
+	// 					movingAnts = movingAnts[1:]
+	// 					// fmt.Print(movingAnts)
+	// 				}
+	// 				fmt.Printf("L%v-%v ", ant, room)
+	// 				if room != path[0] && i == len(movingAnts)-1 {
+	// 					// fmt.Println(movingAnts)
+	// 					room = path[v-1]
+	// 				}
+	// 			}
+	// 			fmt.Println()
+	// 		}
+	// 	}
+	// }
 }
