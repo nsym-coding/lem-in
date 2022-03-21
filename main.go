@@ -19,7 +19,7 @@ type Room struct {
 	adjacent []*Room
 	path     []*Room
 	visited  bool
-	// occupied bool
+	occupied bool
 }
 
 // Reads file and returns a string slice
@@ -141,9 +141,11 @@ func main() {
 		}
 
 	}
+
+	ants := Ants{}
 	test.Print()
 	DFS(test.getRoom(StartR), test)
-	Output()
+	ants.Output()
 }
 
 func (g *Graph) PrintPath() {
@@ -240,25 +242,43 @@ func DFS(r *Room, g Graph) {
 
 }
 
+type Ants struct {
+	antz []*Ant
+}
 type Ant struct {
-	key         string
-	path        []*Room
-	currentRoom Room
+	key  string
+	path []*Room // valid path
+	// currentRoom Room
 }
 
-func Output() {
+func (a *Ants) Output() {
 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
 	// valid paths from dfs function
 	unmovedAnts := []string{}
 
 	for i := 1; i <= numOfAnts; i++ {
 		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(i)})
+		a.antz = append(a.antz, &Ant{path: validPaths[0]})
 	}
-	// fmt.Println(unmovedAnts)
-	vp := validPaths
 
-	// a := Ant {
-	// 	key
+	for _, str := range a.antz {
+		for _, room := range str.path {
+			str.path[0].occupied = true
+			if !room.occupied {
+				fmt.Println(room.key)
+			}
+		}
+	}
+
+	// fmt.Println(unmovedAnts)
+	// vp := validPaths
+
+	// a := Ant{}
+
+	// for i := range unmovedAnts {
+	// 	a.key = "L" + unmovedAnts[i]
+	// 	a.path = validPaths[0]
 	// }
 	// need to use unmoved and movingants
 
