@@ -191,7 +191,17 @@ func main() {
 
 	//AntPath()
 
-	PathSelection(bfsPaths, dfsPaths)
+	//PathSelection(bfsPaths, dfsPaths)
+
+	PathDupeCheck(PathSelection(bfsPaths, dfsPaths))
+
+	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
+		for _, room := range path {
+			fmt.Print(room.key)
+			fmt.Print(" ")
+		}
+		fmt.Println()
+	}
 
 	//dfsGraph.Print()
 
@@ -517,7 +527,7 @@ func BFS(r *Room, g Graph) {
 	for _, v := range vPaths {
 		v = append(v, g.getRoom(EndR))
 		bfsPaths = append(bfsPaths, v)
-		//fmt.Printf("BFS Finale: ----> ")
+		// fmt.Printf("BFS Finale: ----> ")
 		// for _, r := range v {
 		// 	fmt.Printf("%v ", r.key)
 		// }
@@ -526,12 +536,15 @@ func BFS(r *Room, g Graph) {
 
 }
 
-func PathSelection(b [][]*Room, d [][]*Room) {
-	bfsPathNum := len(bfsPaths)
-	dfsPathNum := len(dfsPaths)
+func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
+
+	bfsPathNum := len(bfs)
+	dfsPathNum := len(dfs)
 
 	if bfsPathNum > dfsPathNum {
+
 		validPaths = append(validPaths, bfsPaths...)
+
 	} else if dfsPathNum > bfsPathNum {
 		validPaths = append(validPaths, dfsPaths...)
 	} else if dfsPathNum == bfsPathNum {
@@ -539,32 +552,119 @@ func PathSelection(b [][]*Room, d [][]*Room) {
 		bfscounter := 0
 		dfscounter := 0
 
-		for _, path := range bfsPaths {
+		for _, path := range bfs {
 
 			bfscounter += len(path)
 
 		}
 
-		for _, path := range dfsPaths {
+		for _, path := range dfs {
 			dfscounter += len(path)
 		}
 
 		if bfscounter > dfscounter {
-			validPaths = append(validPaths, bfsPaths...)
+			validPaths = append(validPaths, bfs...)
 		} else if dfscounter > bfscounter {
-			validPaths = append(validPaths, dfsPaths...)
+			validPaths = append(validPaths, dfs...)
 		} else if bfscounter == dfscounter {
-			validPaths = append(validPaths, bfsPaths...)
+			validPaths = append(validPaths, bfs...)
 		}
 
 	}
-	//fmt.Println(bfsPathNum)
-	//fmt.Println(dfsPathNum)
-	for _, path := range validPaths {
-		for _, room := range path {
-			fmt.Println(room.key)
+	return validPaths
+
+}
+
+// func PathSelection(b [][]*Room, d [][]*Room) {
+// 	bfsPathNum := len(bfsPaths)
+// 	dfsPathNum := len(dfsPaths)
+
+// 	fmt.Println("checking bfs len", bfsPathNum)
+// 	fmt.Println("checking dfs len", dfsPathNum)
+
+// 	if bfsPathNum > dfsPathNum {
+// 		validPaths = append(validPaths, bfsPaths...)
+// 	} else if dfsPathNum > bfsPathNum {
+// 		validPaths = append(validPaths, dfsPaths...)
+// 	} else if dfsPathNum == bfsPathNum {
+
+// 		bfscounter := 0
+// 		dfscounter := 0
+
+// 		for _, path := range bfsPaths {
+
+// 			bfscounter += len(path)
+
+// 		}
+
+// 		for _, path := range dfsPaths {
+// 			for i, room := range path {
+// 				if room.key[i] == room.key[i+1] {
+// 					if len(path) < len(path) {
+
+// 					}
+// 				}
+// 				if path[i].key == path[i+1].key {
+// 					if len(path[i].path) < len(path[i+1].path) {
+// 						dfscounter += len(path[i].path)
+
+// 					} else {
+// 						dfscounter += len(path[i+1].path)
+// 					}
+
+// 				} else {
+// 					dfscounter += len(path)
+// 				}
+// 			}
+// 		}
+
+// 		if bfscounter > dfscounter {
+// 			validPaths = append(validPaths, bfsPaths...)
+// 		} else if dfscounter > bfscounter {
+// 			validPaths = append(validPaths, dfsPaths...)
+// 		} else if bfscounter == dfscounter {
+// 			validPaths = append(validPaths, bfsPaths...)
+// 		}
+
+// 	}
+// 	//fmt.Println(bfsPathNum)
+// 	//fmt.Println(dfsPathNum)
+// 	for _, path := range validPaths {
+// 		for _, room := range path {
+// 			fmt.Println(room.key)
+// 		}
+// 	}
+// }
+
+func PathDupeCheck(path [][]*Room) [][]*Room {
+
+	dataMap := make(map[*Room][]*Room)
+
+	for _, item := range path {
+		if value, ok := dataMap[item[0]]; !ok {
+			dataMap[item[0]] = item
+		} else {
+			if len(item) <= len(value) {
+				dataMap[item[0]] = item
+
+			}
 		}
 	}
+
+	// for key , value := range dataMap{
+	// 	fmt.Print(key.key)
+	// 	for _ , room := range value{
+	// 	fmt.Print(room.key)
+	// }
+	// fmt.Println()
+	// }
+	var output [][]*Room
+
+	for _, value := range dataMap {
+		output = append(output, value)
+	}
+
+	return output
 }
 
 // func AntPath() {
