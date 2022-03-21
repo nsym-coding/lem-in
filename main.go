@@ -517,6 +517,45 @@ func Reassign(a [][]*Room) [][]*Room {
 
 }
 
+func Min(a int, array [][]int)[][]int {
+	result := array[0]
+	for _, value := range array {
+
+		if len(result) > len(value) {
+			result = value
+		}
+	}
+	result = append(result, a)
+	return array
+		
+}
+
+
+
+func pathMap(a [][]*Room) {
+	pathmap := make(map[int][]int)
+
+	for i := range a {
+		pathmap[i] = append([]int{}, len(a[i]))
+
+	}
+
+	for key, value := range pathmap {
+		fmt.Printf("%v----%v", key, value)
+		fmt.Println()
+	}
+
+	result 
+	for key , value := range pathmap{
+			if value[0] 
+
+
+	}
+
+	fmt.Println(pathmap)
+
+}
+
 func main() {
 
 	bfsGraph := Graph{}
@@ -563,5 +602,10 @@ func main() {
 		}
 		fmt.Println()
 	}
+
+	pathMap(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+
+
+	
 
 }
