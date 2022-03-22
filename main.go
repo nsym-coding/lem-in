@@ -408,9 +408,12 @@ func BFS(r *Room, g Graph) {
 			}
 			vPaths = append(vPaths, qfront.path)
 
-			DeleteEdge(qfront, g)
+			for _, r := range qfront.path {
+				DeleteEdge(r, g)
 
+			}
 			if len(g.getRoom(StartR).adjacent) == 0 {
+
 				break
 			}
 			//g.Print()
@@ -628,30 +631,46 @@ func main() {
 
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-//	Use below within the main
-	for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, nil))) {
-		for _, room := range path {
+	//	Use below within the main
+	// for _, path := range Reassign(PathDupeCheck(PathSelection(nil, dfsPaths))) {
+	// 	for _, room := range path {
+	// 		fmt.Print(room.key)
+	// 		fmt.Print(" ")
+	// 	}
+	// 	fmt.Println()
+	// }
+
+	for _, value := range bfsPaths {
+		for _, room := range value {
 			fmt.Print(room.key)
-			fmt.Print(" ")
 		}
 		fmt.Println()
+
 	}
 
+	fmt.Println()
+
+	for _, value := range dfsPaths {
+		for _, room := range value {
+			fmt.Print(room.key)
+		}
+		fmt.Println()
+
+	}
 	// Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 
+	//  bugs := Ants{}
+	// 	counter := 0
+	// // 	i:= 0
 
-//  bugs := Ants{}
-// 	counter := 0
-// // 	i:= 0
+	// 	Test := Arrange
+	// 	fmt.Println(Test)
+	// 	for counter < NumAnts(readAntsFile("ants.txt")) {
 
-// 	Test := Arrange
-// 	fmt.Println(Test)
-// 	for counter < NumAnts(readAntsFile("ants.txt")) {
+	// 		fmt.Println(Increment(Test, lowestInt(Test)))
 
-// 		fmt.Println(Increment(Test, lowestInt(Test)))
+	// 		counter++
 
-// 		counter++
-
-// 	}
+	// 	}
 
 }
