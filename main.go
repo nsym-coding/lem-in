@@ -9,6 +9,16 @@ import (
 	"strings"
 )
 
+type Ants struct {
+	antz []*Ant
+}
+
+type Ant struct {
+	key         string
+	path        []int
+	currentRoom Room
+}
+
 //Graph structure
 type Graph struct {
 	rooms []*Room
@@ -489,14 +499,6 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 		}
 	}
 
-	// for key , value := range dataMap{
-	// 	fmt.Print(key.key)
-	// 	for _ , room := range value{
-	// 	fmt.Print(room.key)
-	// }
-	// fmt.Println()
-	// }
-
 	var output [][]*Room
 
 	for _, value := range dataMap {
@@ -530,7 +532,8 @@ func Min(a int, array [][]int) [][]int {
 
 }
 
-func pathSlice(a [][]*Room)[][]int {
+//returns a slice of slice with index o represent the number of rooms within a given path
+func pathSlice(a [][]*Room) [][]int {
 	var slice [][]int
 	var s []int
 
@@ -540,10 +543,8 @@ func pathSlice(a [][]*Room)[][]int {
 		s = []int{}
 	}
 
-return slice
+	return slice
 }
-
-
 
 func pathMap(a [][]*Room) {
 	pathmap := make(map[int][]int)
@@ -558,15 +559,36 @@ func pathMap(a [][]*Room) {
 		fmt.Println()
 	}
 
-	//result
-	// for key , value := range pathmap{
-	// 		if value[0]
-	// }
-
 	fmt.Println(pathmap)
 
 }
 
+//finds most efficient path
+func lowestInt(a [][]int) int {
+
+	min := a[0][0]
+
+	for i := 0; i < len(a); i++ {
+		if a[i][0] < min {
+			min = a[i][0]
+
+		}
+
+	}
+	return min
+}
+
+func Increment(a [][]int, b int) [][]int {
+
+	for _, slice := range a {
+		if slice[0] == b {
+			slice[0] += 1
+			break
+		}
+	}
+	return a
+
+}
 
 func main() {
 
@@ -606,18 +628,30 @@ func main() {
 
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	//Use below within the main
-	// for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))) {
-	// 	for _, room := range path {
-	// 		fmt.Print(room.key)
-	// 		fmt.Print(" ")
-	// 	}
-	// 	fmt.Println()
-	// }
+//	Use below within the main
+	for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, nil))) {
+		for _, room := range path {
+			fmt.Print(room.key)
+			fmt.Print(" ")
+		}
+		fmt.Println()
+	}
+
+	// Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 
 
-	fmt.Println(pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))))
+//  bugs := Ants{}
+// 	counter := 0
+// // 	i:= 0
 
+// 	Test := Arrange
+// 	fmt.Println(Test)
+// 	for counter < NumAnts(readAntsFile("ants.txt")) {
 
-	
+// 		fmt.Println(Increment(Test, lowestInt(Test)))
+
+// 		counter++
+
+// 	}
+
 }
