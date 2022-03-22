@@ -530,7 +530,7 @@ func Min(a int, array [][]int) [][]int {
 
 }
 
-func pathSlice(a [][]*Room) {
+func pathSlice(a [][]*Room)[][]int {
 	var slice [][]int
 	var s []int
 
@@ -540,25 +540,10 @@ func pathSlice(a [][]*Room) {
 		s = []int{}
 	}
 
-	fmt.Println(slice)
-	for _, char := range slice {
-		for _, value := range char {
-			fmt.Println(value)
-
-		}
-	}
+return slice
 }
 
-// for key, value := range pathmap {
-// 	fmt.Printf("%v----%v", key, value)
-// 	fmt.Println()
-// }
 
-// result  := len(pathmap[0][0])
-// for key , value := range pathmap{
-// 		if result == 0
-
-// }
 
 func pathMap(a [][]*Room) {
 	pathmap := make(map[int][]int)
@@ -581,6 +566,7 @@ func pathMap(a [][]*Room) {
 	fmt.Println(pathmap)
 
 }
+
 
 func main() {
 
@@ -621,34 +607,17 @@ func main() {
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
 	//Use below within the main
-	for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))) {
-		for _, room := range path {
-			fmt.Print(room.key)
-			fmt.Print(" ")
-		}
-		fmt.Println()
-	}
-
-	//fmt.Println(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
-	pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
-
-	// for i := range a {
-	// 	for _ , value := range slice{
-	// 	value[i] =  len(a[i])
-
-	// //	fmt.Println(slice)
+	// for _, path := range Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))) {
+	// 	for _, room := range path {
+	// 		fmt.Print(room.key)
+	// 		fmt.Print(" ")
 	// 	}
-
-	// }
-	// c := 1
-	// for i := range slice {
-	// 	slice[i] = c
-	// 	c++
+	// 	fmt.Println()
 	// }
 
-	// for _, char := range slice {
-	// 	for _, value := range char {
-	// 		fmt.Println(value)
-	// 	}
-	// }
+
+	fmt.Println(pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))))
+
+
+	
 }
