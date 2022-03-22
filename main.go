@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -20,6 +21,15 @@ type Room struct {
 	path     []*Room
 	visited  bool
 	occupied bool
+}
+
+type Ants struct {
+	antz []*Ant
+}
+type Ant struct {
+	key  string
+	path []*Room // valid path
+	// currentRoom Room
 }
 
 // Reads file and returns a string slice
@@ -137,6 +147,8 @@ func doesContainRoom(sl []*Room, s string) bool {
 
 func main() {
 
+	//Adding ants
+
 	bfsGraph := Graph{}
 
 	//adding all rooms
@@ -153,9 +165,9 @@ func main() {
 
 	}
 
-	//bfsGraph.Print()
+	bfsGraph.Print()
 	BFS(bfsGraph.getRoom(StartR), bfsGraph)
-	//bfsGraph.Print()
+	bfsGraph.Print()
 
 	dfsGraph := Graph{}
 
@@ -175,8 +187,6 @@ func main() {
 	//dfsGraph.Print()
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	//fmt.Println(validPaths)
-
 	// for _, r := range bfsPaths {
 	// 	for _, f := range r {
 	// 		fmt.Println("BFS Paths ----> ", f.key)
@@ -188,8 +198,9 @@ func main() {
 	// 		fmt.Println("DFS Paths ----> ", f.key)
 	// 	}
 	// }
+	// ants := Ants{}
 
-	//AntPath()
+	// //AntPath()
 
 	//PathSelection(bfsPaths, dfsPaths)
 
@@ -203,10 +214,16 @@ func main() {
 		fmt.Println()
 	}
 
-	//dfsGraph.Print()
+	fmt.Println(validPaths)
+	// //dfsGraph.Print()
 
-	//Output()
+	// //Output()
 
+	// PathAssignment(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)), &ants)
+
+	// method(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+
+	//ants.Output()
 }
 
 func (g *Graph) PrintPath() {
@@ -269,6 +286,34 @@ func (g *Graph) Print() {
 	fmt.Println()
 }
 
+//function to print the ants
+// func (a *Ant) PrintAnts() {
+// 	for i := 0; i < len(a.number); i++ {
+// 		fmt.Println("This is -> ", strconv.Itoa(a.name[i]))
+// 	}
+// }
+
+func (a *Ants) Output() {
+	numOfAnts := NumAnts(readAntsFile("ants.txt"))
+	// valid paths from dfs function
+	unmovedAnts := []string{}
+
+	for i := 1; i <= numOfAnts; i++ {
+		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(i)})
+		a.antz = append(a.antz, &Ant{path: validPaths[0]})
+	}
+
+	for _, ant := range a.antz {
+		for _, room := range ant.path {
+			//ant.path[0].occupied = true
+
+			fmt.Println(room.key)
+
+		}
+	}
+}
+
 // global variable which will store all of the valid paths in a slice of slices of string.
 var validPaths [][]*Room
 
@@ -301,9 +346,9 @@ func DFS(r *Room, g Graph) {
 				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					// for _, r := range nbr.path {
-					// 	fmt.Println("DFS Finale: ----->", r.key)
-					// }
+					for _, r := range nbr.path {
+						fmt.Println("DFS Finale: ----->", r.key)
+					}
 					dfsPaths = append(dfsPaths, nbr.path)
 
 				}
@@ -487,7 +532,7 @@ func BFS(r *Room, g Graph) {
 			for _, room := range g.rooms {
 				room.visited = false
 			}
-			//	fmt.Println("End reached--------------------------------------------------------------------->:", qfront.path)
+			fmt.Println("End reached--------------------------------------------------------------------->:", qfront.path)
 			vPaths = append(vPaths, qfront.path)
 
 			//fmt.Println("team end check: ", vPaths)
@@ -525,9 +570,9 @@ func BFS(r *Room, g Graph) {
 		}
 	}
 	for _, v := range vPaths {
-		v = append(v, g.getRoom(EndR))
+		//v = append(v, g.getRoom(EndR))
 		bfsPaths = append(bfsPaths, v)
-		// fmt.Printf("BFS Finale: ----> ")
+		fmt.Printf("BFS Finale: ----> %v", v)
 		// for _, r := range v {
 		// 	fmt.Printf("%v ", r.key)
 		// }
@@ -636,6 +681,16 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 // 	}
 // }
 
+func Reassign(a [][]*Room) [][]*Room {
+
+	sort.Slice(a, func(i, j int) bool {
+		return len(a[i]) < len(a[j])
+	})
+
+	return a
+
+}
+
 func PathDupeCheck(path [][]*Room) [][]*Room {
 
 	dataMap := make(map[*Room][]*Room)
@@ -667,107 +722,36 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 	return output
 }
 
-// func AntPath() {
+func PathAssignment(path [][]*Room, a *Ants) {
 
-// 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
-// 	vp := validPaths
+	// Sort paths by len
+	path = Reassign(path)
 
-// 	unmovedAnts := []string{}
-// 	movingAnts := []string{}
+	// pathMap := make(map[]int)
+	// for _, v := range path{
 
-// 	for i := 0; i <= numOfAnts; i++ {
-// 		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
-// 	}
+	// }
 
-// 	for _, path := range vp{
-// 		for _, room := range path{
-// 			if !room.occupied{
-// 				if len(movingAnts) > 1{
-// 					movingAnts[0]
-// 				}
-// 			}
-// 		}
-// 	}
+	method(path)
 
-// }
+	// Then get the len of each path and store it
+	// for i, v := range path{
+	// 	 num[i] := len(v)
+	// }
+	// Then need to loop through the amount of ants and append the path with the shortest len to the ants path field
+	// need to check what the shortest len is every time around and add to the len of that path to keep track of whats gone where
+	//
+}
 
-// func Output() {
-// 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
-// 	// valid paths from dfs function
-// 	unmovedAnts := []string{}
-
-// 	for i := 1; i <= numOfAnts; i++ {
-// 		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
-// 	}
-// 	// fmt.Println(unmovedAnts)
-// 	vp := validPaths
-
-// 	// map to hold each room with visited bool
-// 	// append each path into the map
-// 	occupied := make(map[string]bool)
-
-// 	// for _, pathslice := range vp {
-// 	// 	for _, room := range pathslice {
-// 	// 		occupied[room] = false
-// 	// 	}
-// 	// }
-
-// 	movingAnts := []string{}
-// 	counter := 0
-// 	// if room is unoccupied, add ant into moving slice
-// 	// if all rooms upto that point are occupied, turn done, println
-// 	// for _, path := range vp {
-// 	// 	for _, room := range path {
-// 	// 		if !occupied[room] {
-// 	// 			movingAnts = append(movingAnts, unmovedAnts[0])
-// 	// 			if len(unmovedAnts) > 1 {
-// 	// 				unmovedAnts = unmovedAnts[1:]
-// 	// 			}
-
-// 				//fmt.Println("checking mAnts: --->", movingAnts)
-// 				for i, ant := range movingAnts {
-// 					if room == EndR {
-// 						movingAnts = movingAnts[1:]
-// 						fmt.Print("check", movingAnts)
-// 					}
-// 					fmt.Printf("L%v-%v ", ant, room)
-// 					occupied[room] = true
-// 					if room != path[0] && i == len(movingAnts)-1 {
-// 						//fmt.Println(v)
-// 						room = path[0]
-// 					}
-
-// 				}
-// 				occupied[room] = false
-// 				// fmt.Println(occupied)
-// 				// for turn
-// 				fmt.Println()
-// 			}
-// 			// } else if !occupied[room] {
-// 			// 	movingAnts = append(movingAnts, unmovedAnts[0])
-// 			// 	unmovedAnts = unmovedAnts[1:]
-// 			// 	// occupied[path[v+1]] = true
-// 			// 	for _, ant := range movingAnts {
-// 			// 		fmt.Printf("L%v-%v ", ant, room)
-// 			// 		occupied[room] = true
-// 			// 		// fmt.Println(occupied)
-// 			// 		occupied[path[v-1]] = false
-// 			// 		room = path[v-1]
-// 			// 		// fmt.Println(occupied)
-// 			// 		// if ant goes to the end room, remove it from moving ants
-// 			// 		if occupied[room] && room == EndR {
-// 			// 			movingAnts = movingAnts[1:]
-// 			// 			fmt.Print(movingAnts)
-// 			// 		}
-// 			// 	}
-// 			// 	occupied[room] = false
-// 			// 	fmt.Println()
-// 			// }
-// 			//fmt.Println("2nd checking mAnts: +++++>", movingAnts)
-// 			//counter++
-// 		//}
-// 		// for r, v := range occupied {
-// 		// 	fmt.Println("Printing occupied map: --> ", r, v)
-// 		// }
-// 	//}
-// }
+func method(paths [][]*Room) []int {
+	var slice []int
+	paths = Reassign(paths)
+	for _, v := range paths {
+		var m1 map[string]int = map[string]int{}
+		key := fmt.Sprintf("variable%d", len(v))
+		m1[key] = len(v)
+		slice = append(slice, m1[key])
+	}
+	//fmt.Println(slice)
+	return slice
+}
