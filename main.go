@@ -246,30 +246,48 @@ type Ants struct {
 	antz []*Ant
 }
 type Ant struct {
-	key  string
-	path []*Room // valid path
-	// currentRoom Room
+	key         string
+	path        []*Room // valid path
+	currentRoom Room
 }
 
 func (a *Ants) Output() {
 	numOfAnts := NumAnts(readAntsFile("ants.txt"))
 	// valid paths from dfs function
-	unmovedAnts := []string{}
 
+	// getting the adress of ant and another address
+	unmovedAnts := []*Ant{}
+	movingAnts := []*Ant{}
 	for i := 1; i <= numOfAnts; i++ {
-		unmovedAnts = append(unmovedAnts, strconv.Itoa(i))
+		// unmovedAnts = append(unmovedAnts, "L"+strconv.Itoa(i))
 		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(i)})
 		a.antz = append(a.antz, &Ant{path: validPaths[0]})
 	}
 
-	for _, str := range a.antz {
-		for _, room := range str.path {
-			str.path[0].occupied = true
-			if !room.occupied {
-				fmt.Println(room.key)
+	unmovedAnts = append(unmovedAnts, a.antz...)
+	// fmt.Println(unmovedAnts[i].key)
+	fmt.Println(unmovedAnts[4:])
+
+	for _, ant := range a.antz {
+		for _, room := range ant.path {
+			if !room.occupied && len(movingAnts) >= 1 {
+				movingAnts = append(movingAnts, unmovedAnts[0])
+				// unmovedAnts = unmovedAnts[1:]
+				for _, ant := range movingAnts {
+					ant.currentRoom = *room
+					room.occupied = true
+					fmt.Println(ant.key + "-" + room.key)
+				}
+				// fmt.Println(room.key)
+				// ant.path = ant.path[1:]
+				// fmt.Println(ant.path)
 			}
+			// room.occupied = false
 		}
 	}
+	// check moving ants if its len is greater than 1.
+	// else check unmoved ants path 0 and see if the room is unoccupied. move ant to room if unoccupied, remove from unmoved.
+	// set room as current room, remove room from its path.
 
 	// fmt.Println(unmovedAnts)
 	// vp := validPaths
