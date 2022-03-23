@@ -166,14 +166,14 @@ func main() {
 	}
 
 	BFS(bfsGraph.getRoom(StartR), bfsGraph)
-	for _, v := range bfsPaths {
-		//bfsPaths = append(bfsPaths, v)
-		//fmt.Println("Finale: ", v)
-		for _, r := range v {
-			fmt.Print("bfs path \t", r.key)
-		}
-		fmt.Println()
-	}
+	// for _, v := range bfsPaths {
+	// 	//bfsPaths = append(bfsPaths, v)
+	// 	//fmt.Println("Finale: ", v)
+	// 	for _, r := range v {
+	// 		fmt.Print("bfs path \t", r.key)
+	// 	}
+	// 	fmt.Println()
+	// }
 
 	dfsGraph := Graph{}
 
@@ -210,14 +210,44 @@ func main() {
 
 	//PathSelection(bfsPaths, dfsPaths)
 
-	PathDupeCheck(PathSelection(bfsPaths, dfsPaths))
+	// PathDupeCheck(PathSelection(bfsPaths, dfsPaths))
 
-	for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
-		for _, room := range path {
-			fmt.Print(room.key)
-			fmt.Print(" ")
+	// for _, path := range PathDupeCheck(PathSelection(bfsPaths, dfsPaths)) {
+	// 	for _, room := range path {
+	// 		fmt.Print(room.key)
+	// 		fmt.Print(" ")
+	// 	}
+	// 	fmt.Println()
+	// }
+
+	fmt.Println("This is BFS")
+	for _, value := range bfsPaths {
+		for _, room := range value {
+			fmt.Print(room.key, " ")
 		}
 		fmt.Println()
+
+	}
+
+	fmt.Println()
+
+	fmt.Println("This is DFS")
+	for _, value := range dfsPaths {
+		for _, room := range value {
+			fmt.Print(room.key, " ")
+		}
+		fmt.Println()
+
+	}
+
+	fmt.Println()
+	fmt.Println("This is the path selection result")
+	for _, value := range PathSelection(bfsPaths, dfsPaths) {
+		for _, room := range value {
+			fmt.Print(room.key, " ")
+		}
+		fmt.Println()
+
 	}
 
 	// fmt.Println(validPaths)
@@ -359,9 +389,9 @@ func DFS(r *Room, g Graph) {
 				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					for _, r := range nbr.path {
-						fmt.Println("DFS Finale: ----->", r.key)
-					}
+					// for _, r := range nbr.path {
+					// 	fmt.Println("DFS Finale: ----->", r.key)
+					// }
 					dfsPaths = append(dfsPaths, nbr.path)
 
 				}
@@ -390,6 +420,7 @@ func DFS(r *Room, g Graph) {
 
 		}
 	}
+	dfsPaths = PathDupeCheck(dfsPaths)
 
 }
 
@@ -479,9 +510,8 @@ func DeleteEdge(r *Room, g Graph) {
 // Breadth First Search algorithm
 func BFS(r *Room, g Graph) {
 
-	//var vPaths [][]*Room
+	var vPaths [][]*Room
 
-	//sRoom := g.getRoom(StartR)
 	//queue variable, procedurally populated with rooms yet to be visited
 	var queue []*Room
 
@@ -491,131 +521,51 @@ func BFS(r *Room, g Graph) {
 	//initialise queue with start room
 	queue = append(queue, r)
 
-	// for _, v := range queue {
-	// 	fmt.Println("P2", v.key, "\t")
-	// 	fmt.Println("check --------========", queue[0].adjacent[0].key)
-
 	// }
-
 	// checks if there is a link between start and end directly
 	for i, v := range g.getRoom(StartR).adjacent {
 		if v.key == g.getRoom(EndR).key {
 			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR))
-			bfsPaths = append(bfsPaths, g.getRoom(EndR).path)
+			vPaths = append(vPaths, g.getRoom(StartR).path)
 			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
 			//fmt.Println("End reached --------------------------------------------------------------------->", g.getRoom(StartR).path)
 		}
-		//continue
+
 	}
 
-	//	fmt.Println("QQQ:", queue[0].key)
-	//fmt.Println("Queue", queue)
-	//checks the queue for a non-zero value
-	// for len(queue) > 0 {
+	//checks the queue for the end room and if the queue is not empty
 	for !contains(queue, g.getRoom(EndR).key) && len(queue) >= 1 {
 		qfront := queue[0]
 		//	fmt.Println("QF:", qfront.key)
-
 		for _, room := range qfront.adjacent {
 			if !room.visited {
 				room.visited = true
 				room.path = append(qfront.path, room)
-				//	fmt.Println("QFront:\n", qfront.key)
-				//	fmt.Println("Path:", room.path)
+				//
 				queue = append(queue, room)
 				// fmt.Println(queue)
 			}
-			// for _, v := range queue {
-			// 	fmt.Print("print check +++++", v.key, "\t")
-			// }
 
-			// if checkEnd(g, room) {
-			// 	fmt.Println(room.path)
-			// 	os.Exit(0)
-			// }
 		}
-		// fmt.Println("YYYYYYY")
-		// fmt.Println(r.key)
-		// fmt.Println(g.getRoom(StartR).key)
-		// fmt.Println("YYYYYYY")
+
 		queue = queue[1:]
-		// fmt.Println("OOOOOOO")
-		// fmt.Println(r.key)
-		// fmt.Println(g.getRoom(StartR).key)
-		// fmt.Println("OOOOOOO")
 
-		//checking if the end room has been queued/reached
 		if doesContainRoom(queue, g.getRoom(EndR).key) {
-			//fmt.Println("CHECK DELETE EDGE THIS IS QFRONT---: ", qfront.key)
 
-			for _, r := range qfront.path {
-				DeleteEdge(r, g)
-			}
-			// DeleteEdge(qfront.path[0], g)
-			// DeleteEdge(qfront, g)
-			//fmt.Println("Queue when end reached")
 			for _, room := range g.rooms {
 				room.visited = false
 			}
-			// for _, q := range qfront.path {
+			vPaths = append(vPaths, qfront.path)
 
-			// 	fmt.Println("End reached++--------------------------------------------------------------------->:", q.key)
-			// }
-			bfsPaths = append(bfsPaths, qfront.path)
-			//bfsPaths = append(bfsPaths, qfront.path)
+			for _, r := range qfront.path {
+				DeleteEdge(r, g)
 
-			// for _, vp := range vPaths {
-			// 	for _, pv := range vp {
-
-			// 		fmt.Println("team end check: ", pv.key)
-			// 	}
-			// }
-
-			//iterating through start room's adjacents and removing the lead room
-			// for i := 0; i < len(r.adjacent); i++ {
-			// 	if r.adjacent[i].key == qfront.path[0] {
-			// 		//fmt.Println("First home:", r.adjacent[i].key, "\t")
-			// 		r.adjacent = append(r.adjacent[:i], r.adjacent[i+1:]...)
-			// 		// fmt.Println("Start's adjacents:", r.adjacent)
-			// 		for _, v := range r.adjacent {
-			// 			fmt.Print("print check",v.key, "\t")
-			// 		}
-			// 		fmt.Println()
-			// 	}
-			// 	fmt.Println("NNNNNN")
-			// 	fmt.Println(r.key)
-			// 	fmt.Println(g.getRoom(StartR).key)
-			// 	fmt.Println("NNNNNN")
-			// 	// for _, lnks := range qfront.adjacent{
-			// 		// 	DeleteEdge(lnks, g)
-			// 	// }
-			// 	// fmt.Println("test1", r.adjacent[i].key)
-			// 	// if queue[0] == g.getRoom(StartR) && len(queue) == 1 {
-			// 		// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
-			// 		// } else {
-			// 			//queue = queue[1:]
-			// 			// 	BFS(g.getRoom(StartR), Graph{g.rooms}, queue)
-			// 			// }
-			// 		}
-			//	DeleteEdge(qfront, g)
-			//fmt.Println("#### LEVEL TEST ####")
-			//	fmt.Println(len(r.adjacent))
-			// for _, v := range r.adjacent {
-			// 	fmt.Println(v.key, "\t")
-			// }
-			// fmt.Println("len of adj list", len(g.getRoom(StartR).adjacent))
-			//if len(g.getRoom(StartR).adjacent) == 1 {
-			// for _, r := range g.getRoom(StartR).adjacent {
-			// 	if len(r.adjacent) == 0 {
-			// 		break
-			// 	}
-			// }
+			}
 			if len(g.getRoom(StartR).adjacent) == 0 {
-				//	fmt.Println("loop 5")
+
 				break
 			}
-			g.Print()
-
+			//g.Print()
 			if len(g.getRoom(StartR).adjacent) >= 1 {
 				for _, froom := range g.getRoom(StartR).adjacent {
 					for _, sroom := range froom.adjacent {
@@ -631,39 +581,20 @@ func BFS(r *Room, g Graph) {
 				}
 			}
 			BFS(g.getRoom(StartR), Graph{g.rooms})
-			// 		if len(g.getRoom(StartR).adjacent) >= 1 {
-			// 			fmt.Println("start has 1 ------")
-			// 			fmt.Println("len check in loop ----------------------",len(g.getRoom(StartR).adjacent))
-			// 			counter := 0
 
-			// 			for _, value := range g.getRoom(StartR).adjacent{
-			// 				fmt.Println("HELLOOOOOOOOOOOOOOOOOOOO!")
-			// 				if DFSBFS(value, Graph{g.rooms}) == true{
-
-			// 					counter ++
-			// 					fmt.Println("checking culprit---------------+++++++++++++++++++++++++++++++++++")
-			// 				}
-			// 				fmt.Println("counter check YYYYYYYYYYYYY", counter)
-			// 			}
-			// 			fmt.Println("counter check +++++++++++++", counter)
-			// 			if counter != 0{
-
-			// 		BFS(g.getRoom(StartR), Graph{g.rooms})
-			// 		//queue = queue[1:]
-			// 	}
-			// }
 		}
 	}
+	for _, v := range vPaths {
+		v = append(v, g.getRoom(EndR))
+		bfsPaths = append(bfsPaths, v)
+		//fmt.Printf("BFS Finale: ----> ")
+		// for _, r := range v {
+		// 	fmt.Printf("%v ", r.key)
+		// }
+		fmt.Println()
+	}
+	bfsPaths = PathDupeCheck(bfsPaths)
 
-	// for _, v := range bfsPaths {
-	// 	//bfsPaths = append(bfsPaths, v)
-	// 	//fmt.Println("Finale: ", v)
-	// 	for _, r := range v {
-	// 		fmt.Print("bfs path \t", r.key)
-	// 	}
-	// 	fmt.Println()
-	// }
-	//fmt.Println("bfs len check ----------------------", len(bfsPaths))
 }
 
 func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
@@ -672,14 +603,13 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 	dfsPathNum := len(dfs)
 
 	if bfsPathNum > dfsPathNum {
-
 		validPaths = append(validPaths, bfsPaths...)
-
 	} else if dfsPathNum > bfsPathNum {
-		validPaths = append(validPaths, dfsPaths...)
-	} else if dfsPathNum == bfsPathNum {
+		validPaths = PathDupeCheck(append(validPaths, dfsPaths...))
+	} else {
 
 		bfscounter := 0
+
 		dfscounter := 0
 
 		for _, path := range bfs {
@@ -692,11 +622,11 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 			dfscounter += len(path)
 		}
 
-		if bfscounter > dfscounter {
+		if bfscounter < dfscounter {
 			validPaths = append(validPaths, bfs...)
-		} else if dfscounter > bfscounter {
+		} else if dfscounter < bfscounter {
 			validPaths = append(validPaths, dfs...)
-		} else if bfscounter == dfscounter {
+		} else {
 			validPaths = append(validPaths, bfs...)
 		}
 
@@ -791,13 +721,6 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 		}
 	}
 
-	// for key , value := range dataMap{
-	// 	fmt.Print(key.key)
-	// 	for _ , room := range value{
-	// 	fmt.Print(room.key)
-	// }
-	// fmt.Println()
-	// }
 	var output [][]*Room
 
 	for _, value := range dataMap {
