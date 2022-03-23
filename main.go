@@ -269,7 +269,7 @@ func DFS(r *Room, g Graph) {
 
 		}
 	}
-	dfsPaths= PathDupeCheck(dfsPaths)
+	dfsPaths = PathDupeCheck(dfsPaths)
 
 }
 
@@ -376,7 +376,7 @@ func BFS(r *Room, g Graph) {
 	for i, v := range g.getRoom(StartR).adjacent {
 		if v.key == g.getRoom(EndR).key {
 			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR))
-			vPaths = append(vPaths, g.getRoom(EndR).path)
+			vPaths = append(vPaths, g.getRoom(StartR).path)
 			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
 			//fmt.Println("End reached --------------------------------------------------------------------->", g.getRoom(StartR).path)
 		}
@@ -456,23 +456,22 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 	bfsPathNum := len(bfs)
 	dfsPathNum := len(dfs)
 
-
 	if bfsPathNum > dfsPathNum {
-		validPaths =  append(validPaths, bfsPaths...)
+		validPaths = append(validPaths, bfsPaths...)
 	} else if dfsPathNum > bfsPathNum {
-		validPaths =PathDupeCheck( append(validPaths, dfsPaths...))
+		validPaths = PathDupeCheck(append(validPaths, dfsPaths...))
 	} else {
 
 		bfscounter := 0
-		
+
 		dfscounter := 0
-		
+
 		for _, path := range bfs {
-			
+
 			bfscounter += len(path)
-			
+
 		}
-		
+
 		for _, path := range dfs {
 			dfscounter += len(path)
 		}
@@ -481,7 +480,7 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 			validPaths = append(validPaths, bfs...)
 		} else if dfscounter < bfscounter {
 			validPaths = append(validPaths, dfs...)
-		} else  {
+		} else {
 			validPaths = append(validPaths, bfs...)
 		}
 
@@ -662,16 +661,16 @@ func main() {
 
 	}
 
-	// for _, value := range PathSelection (bfsPaths,dfsPaths) {
-	// 	for _, room := range value {
-	// 		fmt.Print(room.key)
-	// 	}
-	// 	fmt.Println()
-
-	// }
+	fmt.Println()
 
 
+	for _, value := range PathSelection(bfsPaths, dfsPaths) {
+		for _, room := range value {
+			fmt.Print(room.key)
+		}
+		fmt.Println()
 
+	}
 
 	// Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 
