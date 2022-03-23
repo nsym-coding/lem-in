@@ -15,7 +15,7 @@ type Ants struct {
 
 type Ant struct {
 	key         string
-	path        []int
+	path        string
 	currentRoom Room
 }
 
@@ -88,7 +88,6 @@ func EndRoom([]string) string {
 		}
 
 	}
-	//fmt.Println(endRoom)
 	return endRoom
 }
 
@@ -235,20 +234,15 @@ func DFS(r *Room, g Graph) {
 				- then append their key to their path value
 				*/
 
-				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					// for _, r := range nbr.path {
-					// 	fmt.Println("DFS Finale: ----->", r.key)
-					// }
+
 					dfsPaths = append(dfsPaths, nbr.path)
 
 				}
-				//fmt.Println(nbr.path)
-				vList = append(vList, nbr.key)
-				//fmt.Println("La Final1: ", vList)
 
-				//DeleteEdge(r, g)
+				vList = append(vList, nbr.key)
+
 				DFS(nbr, Graph{g.rooms})
 
 			}
@@ -292,10 +286,8 @@ func DFSBFS(r *Room, g Graph) bool {
 				- then append their key to their path value
 				*/
 
-				//fmt.Println("*", vList)
 				nbr.path = append(r.path, nbr)
 				if contains(nbr.path, EndR) {
-					//fmt.Println("dfs print check", nbr.path)
 
 					return true
 
@@ -378,7 +370,6 @@ func BFS(r *Room, g Graph) {
 			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR))
 			vPaths = append(vPaths, g.getRoom(StartR).path)
 			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
-			//fmt.Println("End reached --------------------------------------------------------------------->", g.getRoom(StartR).path)
 		}
 
 	}
@@ -387,7 +378,6 @@ func BFS(r *Room, g Graph) {
 
 	for !contains(queue, g.getRoom(EndR).key) && len(queue) >= 1 {
 		qfront := queue[0]
-		//	fmt.Println("QF:", qfront.key)
 
 		for _, room := range qfront.adjacent {
 			if !room.visited {
@@ -395,7 +385,6 @@ func BFS(r *Room, g Graph) {
 				room.path = append(qfront.path, room)
 				//
 				queue = append(queue, room)
-				// fmt.Println(queue)
 			}
 
 		}
@@ -417,16 +406,13 @@ func BFS(r *Room, g Graph) {
 
 				break
 			}
-			//g.Print()
 
 			if len(g.getRoom(StartR).adjacent) >= 1 {
 				for _, froom := range g.getRoom(StartR).adjacent {
 					for _, sroom := range froom.adjacent {
 						if sroom.key != g.getRoom(EndR).key {
-							//	fmt.Println("loop 8")
 							break
 						} else {
-							//	fmt.Println("loop 9")
 							BFS(g.getRoom(StartR), Graph{g.rooms})
 							queue = queue[1:]
 						}
@@ -440,10 +426,7 @@ func BFS(r *Room, g Graph) {
 	for _, v := range vPaths {
 		v = append(v, g.getRoom(EndR))
 		bfsPaths = append(bfsPaths, v)
-		//fmt.Printf("BFS Finale: ----> ")
-		// for _, r := range v {
-		// 	fmt.Printf("%v ", r.key)
-		// }
+
 		fmt.Println()
 	}
 	bfsPaths = PathDupeCheck(bfsPaths)
@@ -538,7 +521,7 @@ func Min(a int, array [][]int) [][]int {
 
 }
 
-//returns a slice of slice with index o represent the number of rooms within a given path
+//returns a slice of slice with index 0 representing the number of rooms within a given path
 func pathSlice(a [][]*Room) [][]int {
 	var slice [][]int
 	var s []int
@@ -570,18 +553,19 @@ func pathMap(a [][]*Room) {
 }
 
 //finds most efficient path
-func lowestInt(a [][]int) int {
+func lowestInt(a [][]int, b [][]*Room) (int, string) {
 
 	min := a[0][0]
+	var path string
 
 	for i := 0; i < len(a); i++ {
 		if a[i][0] < min {
 			min = a[i][0]
-
+			path = b[i][0].key
 		}
 
 	}
-	return min
+	return min, path
 }
 
 func Increment(a [][]int, b int) [][]int {
@@ -634,34 +618,46 @@ func main() {
 
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	//	Use below within the main
-	// for _, path := range Reassign(PathDupeCheck(PathSelection(nil, dfsPaths))) {
-	// 	for _, room := range path {
+	// for _, value := range bfsPaths {
+	// 	for _, room := range value {
 	// 		fmt.Print(room.key)
-	// 		fmt.Print(" ")
 	// 	}
 	// 	fmt.Println()
+
 	// }
 
-	for _, value := range bfsPaths {
-		for _, room := range value {
-			fmt.Print(room.key)
-		}
-		fmt.Println()
-
-	}
-
 	fmt.Println()
 
-	for _, value := range dfsPaths {
-		for _, room := range value {
-			fmt.Print(room.key)
-		}
-		fmt.Println()
+	// for _, value := range dfsPaths {
+	// 	for _, room := range value {
+	// 		fmt.Print(room.key)
+	// 	}
+	// 	fmt.Println()
 
-	}
+	// }
 
-	fmt.Println()
+	// fmt.Println()
+
+	// for _, value := range PathSelection(bfsPaths, dfsPaths) {
+	// 	for _, room := range value {
+	// 		fmt.Print(room.key)
+	// 	}
+	// 	fmt.Println()
+
+	// }
+
+	// type Ants struct {
+	// 	antz []*Ant
+	// }
+
+	// type Ant struct {
+	// 	key         string
+	// 	path        []int
+	// 	currentRoom Room
+	// }
+
+	a := Ants{}
+
 
 
 	for _, value := range PathSelection(bfsPaths, dfsPaths) {
@@ -672,20 +668,36 @@ func main() {
 
 	}
 
-	// Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+//fmt.Println(Room[0][0].key)
+	counter := 0
 
-	//  bugs := Ants{}
-	// 	counter := 0
-	// // 	i:= 0
+	for counter < NumAnts(readAntsFile("ants.txt")) {
 
-	// 	Test := Arrange
-	// 	fmt.Println(Test)
-	// 	for counter < NumAnts(readAntsFile("ants.txt")) {
+		number, _ := lowestInt(Arrange, Rooms)
+		_, route := lowestInt(Arrange, Rooms)
 
-	// 		fmt.Println(Increment(Test, lowestInt(Test)))
+		//fmt.Println(number, route)
 
-	// 		counter++
+		fmt.Println(Increment(Arrange, number))
 
+		counter++
+
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
+	}
+
+	for _, value := range a.antz {
+		fmt.Printf("%v --to --Room%v", value.key, value.path)
+		fmt.Println()
+	}
+//fmt.Println(Arrange)
+	// for _, val := range Arrange {
+	// 	for _, char := range val {
+	// 		fmt.Print(char )
+	// 		fmt.Print(" ")
 	// 	}
+	// 	fmt.Println()
+	// }
 
-}
+ }
