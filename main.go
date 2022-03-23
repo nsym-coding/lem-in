@@ -204,7 +204,7 @@ func main() {
 	// 		fmt.Println("DFS Paths ----> ", f.key)
 	// 	}
 	// }
-	// ants := Ants{}
+	ants := Ants{}
 
 	// //AntPath()
 
@@ -249,6 +249,17 @@ func main() {
 		fmt.Println()
 
 	}
+
+	ants.Output()
+	ants.PathAssignment(PathSelection(bfsPaths, dfsPaths))
+
+	// for _, ant := range ants.antz {
+	// 	for _, room := range ant.path {
+	// 		fmt.Print("This is a room in the path --> ", room.key)
+
+	// 	}
+	// 	fmt.Println()
+	// }
 
 	// fmt.Println(validPaths)
 
@@ -635,67 +646,6 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 
 }
 
-// func PathSelection(b [][]*Room, d [][]*Room) {
-// 	bfsPathNum := len(bfsPaths)
-// 	dfsPathNum := len(dfsPaths)
-
-// 	fmt.Println("checking bfs len", bfsPathNum)
-// 	fmt.Println("checking dfs len", dfsPathNum)
-
-// 	if bfsPathNum > dfsPathNum {
-// 		validPaths = append(validPaths, bfsPaths...)
-// 	} else if dfsPathNum > bfsPathNum {
-// 		validPaths = append(validPaths, dfsPaths...)
-// 	} else if dfsPathNum == bfsPathNum {
-
-// 		bfscounter := 0
-// 		dfscounter := 0
-
-// 		for _, path := range bfsPaths {
-
-// 			bfscounter += len(path)
-
-// 		}
-
-// 		for _, path := range dfsPaths {
-// 			for i, room := range path {
-// 				if room.key[i] == room.key[i+1] {
-// 					if len(path) < len(path) {
-
-// 					}
-// 				}
-// 				if path[i].key == path[i+1].key {
-// 					if len(path[i].path) < len(path[i+1].path) {
-// 						dfscounter += len(path[i].path)
-
-// 					} else {
-// 						dfscounter += len(path[i+1].path)
-// 					}
-
-// 				} else {
-// 					dfscounter += len(path)
-// 				}
-// 			}
-// 		}
-
-// 		if bfscounter > dfscounter {
-// 			validPaths = append(validPaths, bfsPaths...)
-// 		} else if dfscounter > bfscounter {
-// 			validPaths = append(validPaths, dfsPaths...)
-// 		} else if bfscounter == dfscounter {
-// 			validPaths = append(validPaths, bfsPaths...)
-// 		}
-
-// 	}
-// 	//fmt.Println(bfsPathNum)
-// 	//fmt.Println(dfsPathNum)
-// 	for _, path := range validPaths {
-// 		for _, room := range path {
-// 			fmt.Println(room.key)
-// 		}
-// 	}
-// }
-
 func Reassign(a [][]*Room) [][]*Room {
 
 	sort.Slice(a, func(i, j int) bool {
@@ -730,25 +680,39 @@ func PathDupeCheck(path [][]*Room) [][]*Room {
 	return output
 }
 
-func PathAssignment(path [][]*Room, a *Ants) {
+func (a *Ants) PathAssignment(path [][]*Room) {
+	numOfAnts := NumAnts(readAntsFile("ants.txt"))
 
 	// Sort paths by len
 	path = Reassign(path)
 
-	// pathMap := make(map[]int)
-	// for _, v := range path{
-
-	// }
-
-	method(path)
-
 	// Then get the len of each path and store it
-	// for i, v := range path{
-	// 	 num[i] := len(v)
-	// }
+	lenSlice := method(path)
+
+	var min int = lenSlice[0]
+
 	// Then need to loop through the amount of ants and append the path with the shortest len to the ants path field
 	// need to check what the shortest len is every time around and add to the len of that path to keep track of whats gone where
-	//
+	for j := 0; j <= numOfAnts; j++ {
+		for i := 0; i < len(lenSlice); i++ {
+			if min > lenSlice[i] {
+				min = lenSlice[i]
+				lenSlice[i] += 1
+				fmt.Println("len slice: ", lenSlice)
+			}
+			a.antz[j].path = path[i]
+			//lenSlice[i] += 1
+		}
+	}
+
+	for _, ant := range a.antz {
+		for _, room := range ant.path {
+			fmt.Printf("%v --> %v", ant.key, room.key)
+
+		}
+		fmt.Println()
+	}
+
 }
 
 func method(paths [][]*Room) []int {
