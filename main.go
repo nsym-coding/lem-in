@@ -269,6 +269,7 @@ func DFS(r *Room, g Graph) {
 
 		}
 	}
+	dfsPaths= PathDupeCheck(dfsPaths)
 
 }
 
@@ -445,6 +446,7 @@ func BFS(r *Room, g Graph) {
 		// }
 		fmt.Println()
 	}
+	bfsPaths = PathDupeCheck(bfsPaths)
 
 }
 
@@ -454,30 +456,32 @@ func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
 	bfsPathNum := len(bfs)
 	dfsPathNum := len(dfs)
 
+
 	if bfsPathNum > dfsPathNum {
-		validPaths = append(validPaths, bfsPaths...)
+		validPaths =  append(validPaths, bfsPaths...)
 	} else if dfsPathNum > bfsPathNum {
-		validPaths = append(validPaths, dfsPaths...)
-	} else if dfsPathNum == bfsPathNum {
+		validPaths =PathDupeCheck( append(validPaths, dfsPaths...))
+	} else {
 
 		bfscounter := 0
+		
 		dfscounter := 0
-
+		
 		for _, path := range bfs {
-
+			
 			bfscounter += len(path)
-
+			
 		}
-
+		
 		for _, path := range dfs {
 			dfscounter += len(path)
 		}
 
-		if bfscounter > dfscounter {
+		if bfscounter < dfscounter {
 			validPaths = append(validPaths, bfs...)
-		} else if dfscounter > bfscounter {
+		} else if dfscounter < bfscounter {
 			validPaths = append(validPaths, dfs...)
-		} else if bfscounter == dfscounter {
+		} else  {
 			validPaths = append(validPaths, bfs...)
 		}
 
@@ -657,6 +661,18 @@ func main() {
 		fmt.Println()
 
 	}
+
+	// for _, value := range PathSelection (bfsPaths,dfsPaths) {
+	// 	for _, room := range value {
+	// 		fmt.Print(room.key)
+	// 	}
+	// 	fmt.Println()
+
+	// }
+
+
+
+
 	// Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 
 	//  bugs := Ants{}
