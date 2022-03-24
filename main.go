@@ -654,10 +654,14 @@ func main() {
 	}
 
 	//-------------------------------------------------------------------
-
+	// for _, paths := range validPaths {
+	// 	for _, path := range paths {
+	// 		fmt.Println(path.key)
+	// 	}
+	// }
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
-	for len(unmovedAnts) > 0 || len(movedAnts) == 1 {
+	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
 
 		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
@@ -687,13 +691,14 @@ func main() {
 			} else {
 				if len(ant.path) > 1 {
 					ant.path[0].occupied = false
-					// ant.path[0].occupied = false
 
 					ant.path = ant.path[1:]
 					fmt.Print(ant.key, "-", ant.path[0].key, " ")
+					// not sure what is happening with this if statement
 					if len(ant.path) > 1 {
 						ant.path = ant.path[1:]
 					} else {
+						movedAnts = RemoveAnt(movedAnts, ant)
 						ant.path = []*Room{}
 					}
 				}
