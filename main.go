@@ -585,6 +585,10 @@ func Increment(a [][]int, b int) [][]int {
 func RemoveAnt(a []*Ant, b *Ant) []*Ant {
 	ret := make([]*Ant, 0)
 
+	if len(a) == 1 {
+		return []*Ant{}
+	}
+
 	for i := 0; i < len(a); i++ {
 		if a[i].key == b.key {
 			ret = append(ret, a[:i]...)
@@ -685,61 +689,92 @@ func main() {
 
 	// --------------------------------------------------------
 
-	counter := 0
+	var unmovedAnts []*Ant
+	var movedAnts []*Ant
+	counter := 1
 
-	for counter < NumAnts(readAntsFile("ants.txt")) {
+	for counter <= NumAnts(readAntsFile("ants.txt")) {
 
 		number, _ := lowestInt(Arrange, Rooms)
 		_, route := lowestInt(Arrange, Rooms)
-		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter+1), path: route})
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
 		Increment(Arrange, number)
 
 		counter++
-
 	}
-	var unmovedAnts []*Ant
-	var movedAnts []*Ant
+
+	//-------------------------------------------------------------------
 
 	for _, value := range a.antz {
 		unmovedAnts = append(unmovedAnts, value)
 		// fmt.Printf("%v's start room is %v", value.key, value.path[0].key)
 		// fmt.Println()
 	}
+	fmt.Print("Unmoved Ants", " : ")
+	for _, value := range unmovedAnts {
+		fmt.Print(value.key)
+
+		fmt.Print("  ")
+	}
+
+	fmt.Println()
+	//stop := 0
+
+	//--------------------------------------------------------------------------
+
+	for len(unmovedAnts) > 0 {
+		fmt.Println("FIRST  LOOP")
+		for _, ant := range unmovedAnts {
+
+			fmt.Println()
+
+			if !ant.path[0].occupied {
+				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				ant.path[0].occupied = true
+
+				movedAnts = append(movedAnts, ant)
+				unmovedAnts = RemoveAnt(unmovedAnts, ant)
+
+			}
+		}
+
+		fmt.Println()
+
+		fmt.Println("SECOND LOOP")
+		for _, ant := range movedAnts {
+			if len(ant.path) == 1 {
+				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				movedAnts = RemoveAnt(movedAnts, ant)
+			}else{
+			if ant.path[0].occupied {
+				ant.path[0].occupied = false
+				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				ant.path = ant.path[1:]
+			}
+		}
+		// stop++
+		// if stop == 5 {
+		// 	os.Exit(0)
+		// }
+
+	}
+}
+
+	fmt.Println()
 
 	fmt.Print("Unmoved Ants", " : ")
 	for _, value := range unmovedAnts {
 		fmt.Print(value.key)
 		fmt.Print("  ")
 	}
-
 	fmt.Println()
 
-	for _, ant := range unmovedAnts {
-		if !ant.path[0].occupied {
-			fmt.Print(ant.key, "-", ant.path[0].key, "  ")
-			ant.path[0].occupied = true
-			movedAnts = append(movedAnts, ant)
-			unmovedAnts = RemoveAnt(unmovedAnts, ant)
-
-		}
-
-	}
-	fmt.Println()
-
-	fmt.Print("Unmoved Ants"," : ")
-	for _, value := range unmovedAnts {
-		fmt.Print(value.key)
-		fmt.Print("  ")
-	}
-	fmt.Println()
-
-	fmt.Print("Moved Ants"," : ")
+	fmt.Print("Moved Ants", " : ")
 	for _, value := range movedAnts {
 		fmt.Print(value.key)
 		fmt.Print("  ")
 	}
 
 	fmt.Println()
-
 
 }
