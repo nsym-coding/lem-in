@@ -15,7 +15,7 @@ type Ants struct {
 
 type Ant struct {
 	key         string
-	path        string
+	path        []*Room
 	currentRoom Room
 }
 
@@ -553,15 +553,16 @@ func pathMap(a [][]*Room) {
 }
 
 //finds most efficient path
-func lowestInt(a [][]int, b [][]*Room) (int, string) {
+func lowestInt(a [][]int, b [][]*Room) (int, []*Room) {
 
-	min := a[0][0]
-	var path string
+	min := 10000
+	var path []*Room
 
 	for i := 0; i < len(a); i++ {
 		if a[i][0] < min {
 			min = a[i][0]
-			path = b[i][0].key
+			path = b[i]
+
 		}
 
 	}
@@ -578,6 +579,19 @@ func Increment(a [][]int, b int) [][]int {
 	}
 	return a
 
+}
+
+// Function to remove room using its key
+func RemoveAnt(a []*Ant, b *Ant) []*Ant {
+	ret := make([]*Ant, 0)
+
+	for i := 0; i < len(a); i++ {
+		if a[i].key == b.key {
+			ret = append(ret, a[:i]...)
+			ret = append(ret, a[i+1:]...)
+		}
+	}
+	return ret
 }
 
 func main() {
@@ -652,52 +666,80 @@ func main() {
 
 	// type Ant struct {
 	// 	key         string
-	// 	path        []int
+	// 	path        []*Room
 	// 	currentRoom Room
 	// }
 
 	a := Ants{}
 
+	// for _, value := range PathSelection(bfsPaths, dfsPaths) {
+	// 	for _, room := range value {
+	// 		fmt.Print(room.key, " ")
+	// 	}
+	// 	fmt.Println()
 
-
-	for _, value := range PathSelection(bfsPaths, dfsPaths) {
-		for _, room := range value {
-			fmt.Print(room.key)
-		}
-		fmt.Println()
-
-	}
+	//}
 
 	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
-//fmt.Println(Room[0][0].key)
+
+	// --------------------------------------------------------
+
 	counter := 0
 
 	for counter < NumAnts(readAntsFile("ants.txt")) {
 
 		number, _ := lowestInt(Arrange, Rooms)
 		_, route := lowestInt(Arrange, Rooms)
-
-		//fmt.Println(number, route)
-
-		fmt.Println(Increment(Arrange, number))
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter+1), path: route})
+		Increment(Arrange, number)
 
 		counter++
 
-		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
 	}
+	var unmovedAnts []*Ant
+	var movedAnts []*Ant
 
 	for _, value := range a.antz {
-		fmt.Printf("%v --to --Room%v", value.key, value.path)
-		fmt.Println()
+		unmovedAnts = append(unmovedAnts, value)
+		// fmt.Printf("%v's start room is %v", value.key, value.path[0].key)
+		// fmt.Println()
 	}
-//fmt.Println(Arrange)
-	// for _, val := range Arrange {
-	// 	for _, char := range val {
-	// 		fmt.Print(char )
-	// 		fmt.Print(" ")
-	// 	}
-	// 	fmt.Println()
-	// }
 
- }
+	fmt.Print("Unmoved Ants", " : ")
+	for _, value := range unmovedAnts {
+		fmt.Print(value.key)
+		fmt.Print("  ")
+	}
+
+	fmt.Println()
+
+	for _, ant := range unmovedAnts {
+		if !ant.path[0].occupied {
+			fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+			ant.path[0].occupied = true
+			movedAnts = append(movedAnts, ant)
+			unmovedAnts = RemoveAnt(unmovedAnts, ant)
+
+		}
+
+	}
+	fmt.Println()
+
+	fmt.Print("Unmoved Ants"," : ")
+	for _, value := range unmovedAnts {
+		fmt.Print(value.key)
+		fmt.Print("  ")
+	}
+	fmt.Println()
+
+	fmt.Print("Moved Ants"," : ")
+	for _, value := range movedAnts {
+		fmt.Print(value.key)
+		fmt.Print("  ")
+	}
+
+	fmt.Println()
+
+
+}
