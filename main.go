@@ -426,8 +426,6 @@ func BFS(r *Room, g Graph) {
 	for _, v := range vPaths {
 		v = append(v, g.getRoom(EndR))
 		bfsPaths = append(bfsPaths, v)
-
-		fmt.Println()
 	}
 	bfsPaths = PathDupeCheck(bfsPaths)
 
@@ -632,53 +630,7 @@ func main() {
 
 	DFS(dfsGraph.getRoom(StartR), dfsGraph)
 
-	// for _, value := range bfsPaths {
-	// 	for _, room := range value {
-	// 		fmt.Print(room.key)
-	// 	}
-	// 	fmt.Println()
-
-	// }
-
-	fmt.Println()
-
-	// for _, value := range dfsPaths {
-	// 	for _, room := range value {
-	// 		fmt.Print(room.key)
-	// 	}
-	// 	fmt.Println()
-
-	// }
-
-	// fmt.Println()
-
-	// for _, value := range PathSelection(bfsPaths, dfsPaths) {
-	// 	for _, room := range value {
-	// 		fmt.Print(room.key)
-	// 	}
-	// 	fmt.Println()
-
-	// }
-
-	// type Ants struct {
-	// 	antz []*Ant
-	// }
-
-	// type Ant struct {
-	// 	key         string
-	// 	path        []*Room
-	// 	currentRoom Room
-	// }
-
 	a := Ants{}
-
-	// for _, value := range PathSelection(bfsPaths, dfsPaths) {
-	// 	for _, room := range value {
-	// 		fmt.Print(room.key, " ")
-	// 	}
-	// 	fmt.Println()
-
-	//}
 
 	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
 	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
@@ -706,26 +658,26 @@ func main() {
 		// fmt.Printf("%v's start room is %v", value.key, value.path[0].key)
 		// fmt.Println()
 	}
-	fmt.Print("Unmoved Ants", " : ")
-	for _, value := range unmovedAnts {
-		fmt.Print(value.key)
+	// fmt.Print("Unmoved Ants", " : ")
+	// for _, value := range unmovedAnts {
+	// 	fmt.Print(value.key)
 
-		fmt.Print("  ")
-	}
+	// 	fmt.Print("  ")
+	// }
 
-	fmt.Println()
+	// fmt.Println()
 
 	// for _, room := range ant.path {
 	// 	fmt.Println(ant.key, "  - ", room.occupied)
 	// }
 	//--------------------------------------------------------------------------
 
-	for len(unmovedAnts) > 0 {
+	for len(unmovedAnts) >= 0 {
 
-		fmt.Println("FIRST  LOOP")
+		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
 
-			fmt.Println()
+			// fmt.Println()
 
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
@@ -738,7 +690,7 @@ func main() {
 
 		fmt.Println()
 
-		fmt.Println("SECOND LOOP")
+		// fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
 
 			if len(ant.path) == 1 {
@@ -758,7 +710,6 @@ func main() {
 					}
 				}
 			}
-	
 
 		}
 	}
@@ -778,6 +729,6 @@ func main() {
 		fmt.Print("  ")
 	}
 
-	fmt.Println()
+	// fmt.Println()
 
 }
