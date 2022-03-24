@@ -657,7 +657,7 @@ func main() {
 
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
-	for len(unmovedAnts) > 0 {
+	for len(unmovedAnts) > 0 || len(movedAnts) == 1 {
 
 		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
@@ -665,11 +665,11 @@ func main() {
 			// fmt.Println()
 
 			if !ant.path[0].occupied {
-				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
 				ant.path[0].occupied = true
-
 				movedAnts = append(movedAnts, ant)
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
+				// fmt.Println(unmovedAnts)
 			}
 		}
 
@@ -677,18 +677,20 @@ func main() {
 
 		// fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
-			// fmt.Println(ant.path)
+
+			// fmt.Println("moving", ant.key)
+			// movedAnts = RemoveAnt(movedAnts, ant)
 			if len(ant.path) == 1 {
-				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
 				movedAnts = RemoveAnt(movedAnts, ant)
 
 			} else {
 				if len(ant.path) > 1 {
 					ant.path[0].occupied = false
+					// ant.path[0].occupied = false
 
 					ant.path = ant.path[1:]
-					ant.path[0].occupied = true
-					fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+					fmt.Print(ant.key, "-", ant.path[0].key, " ")
 					if len(ant.path) > 1 {
 						ant.path = ant.path[1:]
 					} else {
