@@ -585,10 +585,6 @@ func Increment(a [][]int, b int) [][]int {
 func RemoveAnt(a []*Ant, b *Ant) []*Ant {
 	ret := make([]*Ant, 0)
 
-	if len(a) == 1 {
-		return []*Ant{}
-	}
-
 	for i := 0; i < len(a); i++ {
 		if a[i].key == b.key {
 			ret = append(ret, a[:i]...)
@@ -718,15 +714,20 @@ func main() {
 	}
 
 	fmt.Println()
-	//stop := 0
+	stop := 0
 
+	// for _, room := range ant.path {
+	// 	fmt.Println(ant.key, "  - ", room.occupied)
+	// }
 	//--------------------------------------------------------------------------
 
 	for len(unmovedAnts) > 0 {
+
 		fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
 
 			fmt.Println()
+
 
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
@@ -734,31 +735,34 @@ func main() {
 
 				movedAnts = append(movedAnts, ant)
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
-
 			}
 		}
-
+		
 		fmt.Println()
-
+		
 		fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
-			if len(ant.path) == 1 {
-				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
-				movedAnts = RemoveAnt(movedAnts, ant)
-			}else{
-			if ant.path[0].occupied {
-				ant.path[0].occupied = false
-				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+
+			
+			if len(ant.path) > 0 && ant.path[0].occupied {
+					ant.path[0].occupied = false
+				
+
 				ant.path = ant.path[1:]
+				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+				if len(ant.path) > 1 {
+					ant.path = ant.path[1:]
+				} else {
+					ant.path = []*Room{}
+				}
 			}
 		}
-		// stop++
-		// if stop == 5 {
-		// 	os.Exit(0)
-		// }
+		stop++
+		if stop == 5 {
+			os.Exit(0)
+		}
 
 	}
-}
 
 	fmt.Println()
 
