@@ -714,7 +714,6 @@ func main() {
 	}
 
 	fmt.Println()
-	stop := 0
 
 	// for _, room := range ant.path {
 	// 	fmt.Println(ant.key, "  - ", room.occupied)
@@ -728,7 +727,6 @@ func main() {
 
 			fmt.Println()
 
-
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
 				ant.path[0].occupied = true
@@ -737,31 +735,32 @@ func main() {
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
 			}
 		}
-		
+
 		fmt.Println()
-		
+
 		fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
 
-			
-			if len(ant.path) > 0 && ant.path[0].occupied {
-					ant.path[0].occupied = false
-				
-
-				ant.path = ant.path[1:]
+			if len(ant.path) == 1 {
 				fmt.Print(ant.key, "-", ant.path[0].key, "  ")
-				if len(ant.path) > 1 {
+				movedAnts = RemoveAnt(movedAnts, ant)
+
+			} else {
+				if len(ant.path) > 1 && ant.path[0].occupied {
+					ant.path[0].occupied = false
+
 					ant.path = ant.path[1:]
-				} else {
-					ant.path = []*Room{}
+					fmt.Print(ant.key, "-", ant.path[0].key, "  ")
+					if len(ant.path) > 1 {
+						ant.path = ant.path[1:]
+					} else {
+						ant.path = []*Room{}
+					}
 				}
 			}
-		}
-		stop++
-		if stop == 5 {
-			os.Exit(0)
-		}
+	
 
+		}
 	}
 
 	fmt.Println()
