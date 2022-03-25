@@ -49,8 +49,12 @@ func readAntsFile(filename string) []string {
 }
 
 func NumAnts(s []string) int {
+
+	args := os.Args[1]
+
+
 	antNum := s[0]
-	s = readAntsFile("ants.txt")
+	s = readAntsFile(args)
 	if s[0] <= "0" {
 		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
@@ -63,8 +67,10 @@ func NumAnts(s []string) int {
 // Gets out the start room and returns it
 func StartRoom([]string) string {
 
+	args := os.Args[1]
+
 	var startRoom string
-	s := readAntsFile("ants.txt")
+	s := readAntsFile(args)
 
 	for i := 0; i < len(s); i++ {
 		if s[i] == "##start" {
@@ -79,8 +85,11 @@ func StartRoom([]string) string {
 
 // Gets out the end room and returns it
 func EndRoom([]string) string {
+
+	args := os.Args[1]
+
 	var endRoom string
-	s := readAntsFile("ants.txt")
+	s := readAntsFile(args)
 
 	for i := 0; i < len(s); i++ {
 		if s[i] == "##end" {
@@ -92,8 +101,9 @@ func EndRoom([]string) string {
 }
 
 var (
-	StartR = StartRoom(readAntsFile("ants.txt"))
-	EndR   = EndRoom(readAntsFile("ants.txt"))
+	args = os.Args[1]
+	StartR = StartRoom(readAntsFile(args))
+	EndR   = EndRoom(readAntsFile(args))
 )
 
 //Add Room to a graph
@@ -146,7 +156,7 @@ func doesContainRoom(sl []*Room, s string) bool {
 }
 
 func (g *Graph) PrintPath() {
-	fmt.Println(StartRoom(readAntsFile("ants.txt")))
+	fmt.Println(StartRoom(readAntsFile(args)))
 	for _, v := range g.rooms {
 		for _, r := range v.path {
 			fmt.Println(r)
@@ -183,8 +193,8 @@ func (g *Graph) AddEdge(from, to string) {
 
 //Print will print the adjacent list for each Room of the graph
 func (g *Graph) Print() {
-	// fmt.Println(readAntsFile("ants.txt"))
-	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile("ants.txt")))
+	// fmt.Println(readAntsFile(args))
+	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile(args)))
 	fmt.Println()
 
 	for _, v := range g.rooms {
@@ -599,15 +609,15 @@ func main() {
 	bfsGraph := Graph{}
 
 	//adding all rooms
-	for i, line := range readAntsFile("ants.txt") {
+	for i, line := range readAntsFile(args) {
 		if strings.Contains(string(line), " ") {
-			bfsGraph.AddRoom(strings.Split(readAntsFile("ants.txt")[i], " ")[0])
+			bfsGraph.AddRoom(strings.Split(readAntsFile(args)[i], " ")[0])
 		}
 		// adding all edges from and to rooms
 
 		if strings.Contains(string(line), "-") {
-			bfsGraph.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			bfsGraph.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
+			bfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[0], strings.Split(readAntsFile(args)[i], "-")[1])
+			bfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[1], strings.Split(readAntsFile(args)[i], "-")[0])
 		}
 
 	}
@@ -618,14 +628,14 @@ func main() {
 	dfsGraph := Graph{}
 
 	//adding all rooms
-	for i, line := range readAntsFile("ants.txt") {
+	for i, line := range readAntsFile(args) {
 		if strings.Contains(string(line), " ") {
-			dfsGraph.AddRoom(strings.Split(readAntsFile("ants.txt")[i], " ")[0])
+			dfsGraph.AddRoom(strings.Split(readAntsFile(args)[i], " ")[0])
 		}
 		// adding all edges from and to rooms
 		// only adding edges in one direction to make the graph directional
 		if strings.Contains(string(line), "-") {
-			dfsGraph.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
+			dfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[0], strings.Split(readAntsFile(args)[i], "-")[1])
 		}
 
 	}
@@ -643,7 +653,7 @@ func main() {
 	var movedAnts []*Ant
 	counter := 1
 
-	for counter <= NumAnts(readAntsFile("ants.txt")) {
+	for counter <= NumAnts(readAntsFile(args)) {
 
 		number, _ := lowestInt(Arrange, Rooms)
 		_, route := lowestInt(Arrange, Rooms)
