@@ -4,8 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
+	"strconv"
 	"strings"
 )
+
+type Ants struct {
+	antz []*Ant
+}
+
+type Ant struct {
+	key         string
+	path        []*Room
+	currentRoom Room
+}
 
 //Graph structure
 type Graph struct {
@@ -16,8 +28,9 @@ type Graph struct {
 type Room struct {
 	key      string
 	adjacent []*Room
-	path     []string
+	path     []*Room
 	visited  bool
+	occupied bool
 }
 
 // Reads file and returns a string slice
@@ -35,54 +48,63 @@ func readAntsFile(filename string) []string {
 	return lines
 }
 
-func NumAnts(s []string) string {
+func NumAnts(s []string) int {
+
+	args := os.Args[1]
+
+
 	antNum := s[0]
-	s = readAntsFile("ants.txt")
+	s = readAntsFile(args)
 	if s[0] <= "0" {
 		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
 	}
-	return antNum
+
+	antNumInt, _ := strconv.Atoi(antNum)
+	return antNumInt
 }
 
 // Gets out the start room and returns it
 func StartRoom([]string) string {
 
+	args := os.Args[1]
+
 	var startRoom string
-	s := readAntsFile("ants.txt")
-	//	fmt.Println(s)
+	s := readAntsFile(args)
+
 	for i := 0; i < len(s); i++ {
 		if s[i] == "##start" {
 			startRoom = strings.Split(string(s[i+1]), " ")[0]
 		}
 
 	}
-	//fmt.Println(startRoom)
+
 	return startRoom
 
 }
 
 // Gets out the end room and returns it
 func EndRoom([]string) string {
+
+	args := os.Args[1]
+
 	var endRoom string
-	s := readAntsFile("ants.txt")
-	// fmt.Println(s)
+	s := readAntsFile(args)
+
 	for i := 0; i < len(s); i++ {
 		if s[i] == "##end" {
 			endRoom = strings.Split(string(s[i+1]), " ")[0]
 		}
 
 	}
-	//fmt.Println(endRoom)
 	return endRoom
 }
 
 var (
-	StartR = StartRoom(readAntsFile("ants.txt"))
-	EndR   = EndRoom(readAntsFile("ants.txt"))
+	args = os.Args[1]
+	StartR = StartRoom(readAntsFile(args))
+	EndR   = EndRoom(readAntsFile(args))
 )
-
-var start *Room
 
 //Add Room to a graph
 func (g *Graph) AddRoom(k string) {
@@ -123,71 +145,18 @@ func doesContain(s string, sl []string) bool {
 	return false
 }
 
-//delete edge from starting room
-// func (r *Room) DeleteEdge(k string) {
+func doesContainRoom(sl []*Room, s string) bool {
 
-// 	// if !contains(g.rooms, k) {
-// 	//     err := fmt.Errorf("edge %v not deleted because it doesn't exist", k)
-// 	//     fmt.Println(err.Error())
-// 	// } else {
-// 	fmt.Println("Error check 1")
-
-// 	// for _, t := range r{
-// 	// 	fmt.Println("Error check 2")
-
-// 	start := g.get
-
-// 	for r.key = k{
-// 		r.adjacent =
-// 	}
-// 	fmt.Println("Error check 3")
-
-// 	r.adjacent = r.adjacent[1:]
-// 	fmt.Println("something")
-// 	// for i , room := range g.rooms[i].adjacent{
-// 	//     if  room.key == k {
-// 	//         g.rooms[i].adjacent =
-// 	//     }
-// 	// }
-
-// }
-
-func main() {
-
-	// err := errors.New("ERROR: invalid data format")
-	// if err != nil {
-	// 	fmt.Print(err, "\n")
-	// 	os.Exit(1)
-	// }
-
-	test := Graph{}
-
-	//adding all rooms
-	for i, line := range readAntsFile("ants.txt") {
-		if strings.Contains(string(line), " ") {
-			test.AddRoom(strings.Split(readAntsFile("ants.txt")[i], " ")[0])
+	for _, word := range sl {
+		if s == word.key {
+			return true
 		}
-		// adding all edges from and to rooms
-		// maybe add a condition so that it adds the edges in order i.e. the end room as the last edge?
-		if strings.Contains(string(line), "-") {
-			test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[0], strings.Split(readAntsFile("ants.txt")[i], "-")[1])
-			//test.AddEdge(strings.Split(readAntsFile("ants.txt")[i], "-")[1], strings.Split(readAntsFile("ants.txt")[i], "-")[0])
-		}
-
 	}
-
-	test.Print()
-	DFS(test.getRoom(StartR), test)
-	//dfsStart(test)
-	//GFS(test)
-	//test.PrintPath()
-	//DeleteEdge()
-	//test.Print()
-
+	return false
 }
 
 func (g *Graph) PrintPath() {
-	fmt.Println(StartRoom(readAntsFile("ants.txt")))
+	fmt.Println(StartRoom(readAntsFile(args)))
 	for _, v := range g.rooms {
 		for _, r := range v.path {
 			fmt.Println(r)
@@ -196,7 +165,7 @@ func (g *Graph) PrintPath() {
 }
 
 // add all edges
-// Add edge to the graph. deals with a directional graph only
+// Add edge to the graph. deals with a directional graph only but condition in the main makes it undirected
 func (g *Graph) AddEdge(from, to string) {
 	//get Room
 	fromRoom := g.getRoom(from)
@@ -213,9 +182,9 @@ func (g *Graph) AddEdge(from, to string) {
 		err := fmt.Errorf("cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
 	} else if fromRoom.key == EndR {
-		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
-	} else if toRoom.key == StartR {
-		toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+		//} //else if toRoom.key == StartR {
+		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
@@ -224,8 +193,8 @@ func (g *Graph) AddEdge(from, to string) {
 
 //Print will print the adjacent list for each Room of the graph
 func (g *Graph) Print() {
-	// fmt.Println(readAntsFile("ants.txt"))
-	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile("ants.txt")))
+	// fmt.Println(readAntsFile(args))
+	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile(args)))
 	fmt.Println()
 
 	for _, v := range g.rooms {
@@ -246,7 +215,14 @@ func (g *Graph) Print() {
 	fmt.Println()
 }
 
-// Depth first search function that operates recursively
+// global variable which will store all of the valid paths in a slice of slices of string.
+var validPaths [][]*Room
+
+// Slices to hold paths from both algos for comparison
+var dfsPaths [][]*Room
+var bfsPaths [][]*Room
+
+// Depth First Search algorithm that operates recursively
 func DFS(r *Room, g Graph) {
 
 	vList := []string{}
@@ -268,14 +244,15 @@ func DFS(r *Room, g Graph) {
 				- then append their key to their path value
 				*/
 
-				//fmt.Println("*", vList)
+				nbr.path = append(r.path, nbr)
+				if contains(nbr.path, EndR) {
 
-				nbr.path = append(r.path, nbr.key)
-				if doesContain(EndR, nbr.path) {
-					fmt.Println(nbr.path)
+					dfsPaths = append(dfsPaths, nbr.path)
+
 				}
-				//fmt.Println(nbr.path)
+
 				vList = append(vList, nbr.key)
+
 				DFS(nbr, Graph{g.rooms})
 
 			}
@@ -283,22 +260,502 @@ func DFS(r *Room, g Graph) {
 		}
 
 	} else {
+
 		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
 			vList = append(vList, r.key)
 
-			//fmt.Println("*", vList)
 			sRoom.adjacent = sRoom.adjacent[1:][:]
 
 			DFS(sRoom, Graph{g.rooms})
 
 		} else {
 			vList = append(vList, r.key)
-			//fmt.Println("*", vList)
+
+		}
+	}
+	dfsPaths = PathDupeCheck(dfsPaths)
+
+}
+
+// Depth first search function that operates recursively
+func DFSBFS(r *Room, g Graph) bool {
+
+	//vList := []string{}
+	//sRoom := g.getRoom(StartR)
+
+	// set the room being checked visited status to true
+	if r.key != EndR {
+		r.visited = true
+
+		// range through the neighbours of the r
+		for _, nbr := range r.adjacent {
+			if !nbr.visited {
+				/* for each neighbour that hasn't been visited,
+				- append their key to the visited slice,
+				- then apply dfs to them recursively,
+				- then append their key to their path value
+				*/
+
+				nbr.path = append(r.path, nbr)
+				if contains(nbr.path, EndR) {
+
+					return true
+
+				}
+
+			}
+
+		}
+
+	}
+	return false
+}
+
+// Function to remove room using its key
+func RemoveRoomIndex(s []*Room, index string) []*Room {
+	ret := make([]*Room, 0)
+
+	for i := 0; i < len(s); i++ {
+		if s[i].key == index {
+			ret = append(ret, s[:i]...)
+			ret = append(ret, s[i+1:]...)
+		}
+	}
+	return ret
+}
+
+// function to remove an element from a slice of ints
+func RemoveIndex(s []int, index int) []int {
+	ret := make([]int, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
+}
+
+//removes a string from a slice (unordered)
+func remove(s []*Room, k string) []*Room {
+	for i := 0; i < len(s); i++ {
+		if s[i].key == k {
+			s[i] = s[len(s)-1]
+
+		}
+
+	}
+	return s[:len(s)-1]
+}
+
+//delete edge from starting room
+func DeleteEdge(r *Room, g Graph) {
+
+	for i := 0; i < len(r.path); i++ {
+		for _, room := range g.rooms {
+			//	for _ , edge := range room.adjacent
+			for j := 0; j < len(room.adjacent); j++ {
+				if room.adjacent[j] == r.path[i] {
+					room.adjacent = remove(room.adjacent, r.key)
+				}
+			}
 		}
 	}
 }
 
-// Function that initialises that DFS algorithm by taking the target graph as an argument
-// func dfsStart(g *Graph) {
-// 	DFS(g.getRoom(StartR))
-// }
+// Breadth First Search algorithm
+func BFS(r *Room, g Graph) {
+
+	var vPaths [][]*Room
+
+	//queue variable, procedurally populated with rooms yet to be visited
+	var queue []*Room
+
+	//set start room as visited
+	r.visited = true
+
+	//initialise queue with start room
+	queue = append(queue, r)
+
+	// }
+
+	// checks if there is a link between start and end directly
+	for i, v := range g.getRoom(StartR).adjacent {
+		if v.key == g.getRoom(EndR).key {
+			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR))
+			vPaths = append(vPaths, g.getRoom(StartR).path)
+			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
+		}
+
+	}
+
+	//checks the queue for the end room and if the queue is not empty
+
+	for !contains(queue, g.getRoom(EndR).key) && len(queue) >= 1 {
+		qfront := queue[0]
+
+		for _, room := range qfront.adjacent {
+			if !room.visited {
+				room.visited = true
+				room.path = append(qfront.path, room)
+				//
+				queue = append(queue, room)
+			}
+
+		}
+
+		queue = queue[1:]
+
+		if doesContainRoom(queue, g.getRoom(EndR).key) {
+
+			for _, room := range g.rooms {
+				room.visited = false
+			}
+			vPaths = append(vPaths, qfront.path)
+
+			for _, r := range qfront.path {
+				DeleteEdge(r, g)
+
+			}
+			if len(g.getRoom(StartR).adjacent) == 0 {
+
+				break
+			}
+
+			if len(g.getRoom(StartR).adjacent) >= 1 {
+				for _, froom := range g.getRoom(StartR).adjacent {
+					for _, sroom := range froom.adjacent {
+						if sroom.key != g.getRoom(EndR).key {
+							break
+						} else {
+							BFS(g.getRoom(StartR), Graph{g.rooms})
+							queue = queue[1:]
+						}
+					}
+				}
+			}
+			BFS(g.getRoom(StartR), Graph{g.rooms})
+
+		}
+	}
+	for _, v := range vPaths {
+		v = append(v, g.getRoom(EndR))
+		bfsPaths = append(bfsPaths, v)
+	}
+	bfsPaths = PathDupeCheck(bfsPaths)
+
+}
+
+//returns the optimal path between bfs & dfs algos
+func PathSelection(bfs [][]*Room, dfs [][]*Room) [][]*Room {
+
+	bfsPathNum := len(bfs)
+	dfsPathNum := len(dfs)
+
+	if bfsPathNum > dfsPathNum {
+		validPaths = append(validPaths, bfsPaths...)
+	} else if dfsPathNum > bfsPathNum {
+		validPaths = PathDupeCheck(append(validPaths, dfsPaths...))
+	} else {
+
+		bfscounter := 0
+
+		dfscounter := 0
+
+		for _, path := range bfs {
+
+			bfscounter += len(path)
+
+		}
+
+		for _, path := range dfs {
+			dfscounter += len(path)
+		}
+
+		if bfscounter < dfscounter {
+			validPaths = append(validPaths, bfs...)
+		} else if dfscounter < bfscounter {
+			validPaths = append(validPaths, dfs...)
+		} else {
+			validPaths = append(validPaths, bfs...)
+		}
+
+	}
+	return validPaths
+
+}
+
+//error checking for duplicate starting points
+func PathDupeCheck(path [][]*Room) [][]*Room {
+
+	dataMap := make(map[*Room][]*Room)
+
+	for _, item := range path {
+		if value, ok := dataMap[item[0]]; !ok {
+			dataMap[item[0]] = item
+		} else {
+			if len(item) <= len(value) {
+				dataMap[item[0]] = item
+
+			}
+		}
+	}
+
+	var output [][]*Room
+
+	for _, value := range dataMap {
+		output = append(output, value)
+	}
+
+	return output
+}
+
+//reassigns the slices in ascending (len) order
+func Reassign(a [][]*Room) [][]*Room {
+
+	sort.Slice(a, func(i, j int) bool {
+		return len(a[i]) < len(a[j])
+	})
+
+	return a
+
+}
+
+func Min(a int, array [][]int) [][]int {
+	result := array[0]
+	for _, value := range array {
+
+		if len(result) > len(value) {
+			result = value
+		}
+	}
+	result = append(result, a)
+	return array
+
+}
+
+//returns a slice of slice with index 0 representing the number of rooms within a given path
+func pathSlice(a [][]*Room) [][]int {
+	var slice [][]int
+	var s []int
+
+	for i := range a {
+		s = append(s, len(a[i]))
+		slice = append(slice, s)
+		s = []int{}
+	}
+
+	return slice
+}
+
+func pathMap(a [][]*Room) {
+	pathmap := make(map[int][]int)
+
+	for i := range a {
+		pathmap[i] = append([]int{}, len(a[i]))
+
+	}
+
+	for key, value := range pathmap {
+		fmt.Printf("%v----%v", key, value)
+		fmt.Println()
+	}
+
+	fmt.Println(pathmap)
+
+}
+
+//finds most efficient path
+func lowestInt(a [][]int, b [][]*Room) (int, []*Room) {
+
+	min := 10000
+	var path []*Room
+
+	for i := 0; i < len(a); i++ {
+		if a[i][0] < min {
+			min = a[i][0]
+			path = b[i]
+
+		}
+
+	}
+	return min, path
+}
+
+func Increment(a [][]int, b int) [][]int {
+
+	for _, slice := range a {
+		if slice[0] == b {
+			slice[0] += 1
+			break
+		}
+	}
+	return a
+
+}
+
+// Function to remove room using its key
+func RemoveAnt(a []*Ant, b *Ant) []*Ant {
+	ret := make([]*Ant, 0)
+	if len(a) == 1 {
+		return []*Ant{}
+	}
+	for i := 0; i < len(a); i++ {
+		if a[i].key == b.key {
+			ret = append(ret, a[:i]...)
+			ret = append(ret, a[i+1:]...)
+		}
+	}
+	return ret
+}
+
+func main() {
+
+	bfsGraph := Graph{}
+
+	//adding all rooms
+	for i, line := range readAntsFile(args) {
+		if strings.Contains(string(line), " ") {
+			bfsGraph.AddRoom(strings.Split(readAntsFile(args)[i], " ")[0])
+		}
+		// adding all edges from and to rooms
+
+		if strings.Contains(string(line), "-") {
+			bfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[0], strings.Split(readAntsFile(args)[i], "-")[1])
+			bfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[1], strings.Split(readAntsFile(args)[i], "-")[0])
+		}
+
+	}
+
+	BFS(bfsGraph.getRoom(StartR), bfsGraph)
+	//bfsGraph.Print()
+
+	dfsGraph := Graph{}
+
+	//adding all rooms
+	for i, line := range readAntsFile(args) {
+		if strings.Contains(string(line), " ") {
+			dfsGraph.AddRoom(strings.Split(readAntsFile(args)[i], " ")[0])
+		}
+		// adding all edges from and to rooms
+		// only adding edges in one direction to make the graph directional
+		if strings.Contains(string(line), "-") {
+			dfsGraph.AddEdge(strings.Split(readAntsFile(args)[i], "-")[0], strings.Split(readAntsFile(args)[i], "-")[1])
+		}
+
+	}
+
+	DFS(dfsGraph.getRoom(StartR), dfsGraph)
+
+	a := Ants{}
+
+	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+
+	// --------------------------------------------------------
+
+	var unmovedAnts []*Ant
+	var movedAnts []*Ant
+	counter := 1
+
+	for counter <= NumAnts(readAntsFile(args)) {
+
+		number, _ := lowestInt(Arrange, Rooms)
+		_, route := lowestInt(Arrange, Rooms)
+		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
+		Increment(Arrange, number)
+
+		counter++
+	}
+
+	//-------------------------------------------------------------------
+	// for _, paths := range validPaths {
+	// 	for _, path := range paths {
+	// 		fmt.Println(path.key)
+	// 	}
+	// }
+	unmovedAnts = append(unmovedAnts, a.antz...)
+
+	// for _ ant := range uunmovedAnts{
+
+	// 	fmt.Println("Checking rooms in path: -----> ", ant)
+	// }
+	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
+
+		for _, ant := range unmovedAnts {
+			if len(ant.path) == 1 {
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				ant.path[0].occupied = true
+				unmovedAnts = RemoveAnt(unmovedAnts, ant)
+				break
+			}
+		}
+
+		// fmt.Println("FIRST  LOOP")
+		for _, ant := range unmovedAnts {
+
+			// fmt.Println()
+			// if ant.path[0] == dfsGraph.getRoom(EndR) {
+			// 	fmt.Print(ant.key, "-", ant.path[0].key, " ")
+			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
+			// 	ant.path[0].occupied = false
+
+			if !ant.path[0].occupied {
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				ant.path[0].occupied = true
+				movedAnts = append(movedAnts, ant)
+				unmovedAnts = RemoveAnt(unmovedAnts, ant)
+				// fmt.Println(unmovedAnts)
+			}
+			// if len(ant.path) == 1 {
+			// 	//fmt.Print(ant.key, "-+", ant.path[0].key, " ")
+			// 	movedAnts = RemoveAnt(movedAnts, ant)
+			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
+			// 	//ant.path[0].occupied = true
+			// 	//continue
+			// }
+			// //bfsGraph.getRoom(EndR).occupied = true
+			// //	dfsGraph.getRoom(EndR).occupied = true
+
+			// ant.path[0].occupied = false
+			//ant.path = ant.path[1:]
+
+		}
+
+		fmt.Println()
+
+		// fmt.Println("SECOND LOOP")
+		for _, ant := range movedAnts {
+
+			// fmt.Println("moving", ant.key)
+			// movedAnts = RemoveAnt(movedAnts, ant)
+
+			if len(ant.path) > 1 {
+				ant.path[0].occupied = false
+
+				ant.path = ant.path[1:]
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				// not sure what is happening with this if statement
+				// if len(ant.path) > 1 {
+				// 	continue
+			} else {
+				movedAnts = RemoveAnt(movedAnts, ant)
+				ant.path = []*Room{}
+			}
+		}
+
+	}
+
+	fmt.Println()
+
+	// fmt.Print("Unmoved Ants", " : ")
+	// for _, value := range unmovedAnts {
+	// 	fmt.Print(value.key)
+	// 	fmt.Print("  ")
+	// }
+	// fmt.Println()
+
+	// fmt.Print("Moved Ants", " : ")
+	// for _, value := range movedAnts {
+	// 	fmt.Print(value.key)
+	// 	fmt.Print("  ")
+	// }
+
+	// fmt.Println()
+
+}
