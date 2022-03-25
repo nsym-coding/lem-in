@@ -661,6 +661,10 @@ func main() {
 	// }
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
+	// for _ ant := range uunmovedAnts{
+
+	// 	fmt.Println("Checking rooms in path: -----> ", ant)
+	// }
 	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
 
 		// fmt.Println("FIRST  LOOP")
@@ -696,7 +700,7 @@ func main() {
 					fmt.Print(ant.key, "-", ant.path[0].key, " ")
 					// not sure what is happening with this if statement
 					if len(ant.path) > 1 {
-						ant.path = ant.path[1:]
+						//ant.path = ant.path[1:]
 					} else {
 						movedAnts = RemoveAnt(movedAnts, ant)
 						ant.path = []*Room{}
