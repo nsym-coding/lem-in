@@ -673,7 +673,6 @@ func main() {
 				ant.path[0].occupied = true
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
 				break
-
 			}
 		}
 
@@ -715,43 +714,37 @@ func main() {
 
 			// fmt.Println("moving", ant.key)
 			// movedAnts = RemoveAnt(movedAnts, ant)
-			if len(ant.path) == 1 {
-				//	fmt.Print(ant.key, "*-", ant.path[0].key, " ")
-				movedAnts = RemoveAnt(movedAnts, ant)
 
+			if len(ant.path) > 1 {
+				ant.path[0].occupied = false
+
+				ant.path = ant.path[1:]
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				// not sure what is happening with this if statement
+				// if len(ant.path) > 1 {
+				// 	continue
 			} else {
-				if len(ant.path) > 1 {
-					ant.path[0].occupied = false
-
-					ant.path = ant.path[1:]
-					fmt.Print(ant.key, "-", ant.path[0].key, " ")
-					// not sure what is happening with this if statement
-					if len(ant.path) > 1 {
-						//ant.path = ant.path[1:]
-					} else {
-						movedAnts = RemoveAnt(movedAnts, ant)
-						ant.path = []*Room{}
-					}
-				}
+				movedAnts = RemoveAnt(movedAnts, ant)
+				ant.path = []*Room{}
 			}
-
 		}
+
 	}
 
 	fmt.Println()
 
-	fmt.Print("Unmoved Ants", " : ")
-	for _, value := range unmovedAnts {
-		fmt.Print(value.key)
-		fmt.Print("  ")
-	}
-	fmt.Println()
+	// fmt.Print("Unmoved Ants", " : ")
+	// for _, value := range unmovedAnts {
+	// 	fmt.Print(value.key)
+	// 	fmt.Print("  ")
+	// }
+	// fmt.Println()
 
-	fmt.Print("Moved Ants", " : ")
-	for _, value := range movedAnts {
-		fmt.Print(value.key)
-		fmt.Print("  ")
-	}
+	// fmt.Print("Moved Ants", " : ")
+	// for _, value := range movedAnts {
+	// 	fmt.Print(value.key)
+	// 	fmt.Print("  ")
+	// }
 
 	// fmt.Println()
 
