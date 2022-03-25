@@ -14,9 +14,8 @@ type Ants struct {
 }
 
 type Ant struct {
-	key         string
-	path        []*Room
-	currentRoom Room
+	key  string
+	path []*Room
 }
 
 //Graph structure
@@ -51,7 +50,6 @@ func readAntsFile(filename string) []string {
 func NumAnts(s []string) int {
 
 	args := os.Args[1]
-
 
 	antNum := s[0]
 	s = readAntsFile(args)
@@ -101,7 +99,7 @@ func EndRoom([]string) string {
 }
 
 var (
-	args = os.Args[1]
+	args   = os.Args[1]
 	StartR = StartRoom(readAntsFile(args))
 	EndR   = EndRoom(readAntsFile(args))
 )
@@ -130,15 +128,6 @@ func (g *Graph) getRoom(k string) *Room {
 func contains(s []*Room, k string) bool {
 	for _, v := range s {
 		if k == v.key {
-			return true
-		}
-	}
-	return false
-}
-
-func doesContain(s string, sl []string) bool {
-	for _, word := range sl {
-		if s == word {
 			return true
 		}
 	}
@@ -193,7 +182,6 @@ func (g *Graph) AddEdge(from, to string) {
 
 //Print will print the adjacent list for each Room of the graph
 func (g *Graph) Print() {
-	// fmt.Println(readAntsFile(args))
 	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile(args)))
 	fmt.Println()
 
@@ -371,8 +359,6 @@ func BFS(r *Room, g Graph) {
 
 	//initialise queue with start room
 	queue = append(queue, r)
-
-	// }
 
 	// checks if there is a link between start and end directly
 	for i, v := range g.getRoom(StartR).adjacent {
@@ -663,18 +649,8 @@ func main() {
 		counter++
 	}
 
-	//-------------------------------------------------------------------
-	// for _, paths := range validPaths {
-	// 	for _, path := range paths {
-	// 		fmt.Println(path.key)
-	// 	}
-	// }
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
-	// for _ ant := range uunmovedAnts{
-
-	// 	fmt.Println("Checking rooms in path: -----> ", ant)
-	// }
 	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
 
 		for _, ant := range unmovedAnts {
@@ -688,51 +664,23 @@ func main() {
 
 		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
-
-			// fmt.Println()
-			// if ant.path[0] == dfsGraph.getRoom(EndR) {
-			// 	fmt.Print(ant.key, "-", ant.path[0].key, " ")
-			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
-			// 	ant.path[0].occupied = false
-
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, " ")
 				ant.path[0].occupied = true
 				movedAnts = append(movedAnts, ant)
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
-				// fmt.Println(unmovedAnts)
 			}
-			// if len(ant.path) == 1 {
-			// 	//fmt.Print(ant.key, "-+", ant.path[0].key, " ")
-			// 	movedAnts = RemoveAnt(movedAnts, ant)
-			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
-			// 	//ant.path[0].occupied = true
-			// 	//continue
-			// }
-			// //bfsGraph.getRoom(EndR).occupied = true
-			// //	dfsGraph.getRoom(EndR).occupied = true
-
-			// ant.path[0].occupied = false
-			//ant.path = ant.path[1:]
-
 		}
 
 		fmt.Println()
 
 		// fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
-
-			// fmt.Println("moving", ant.key)
-			// movedAnts = RemoveAnt(movedAnts, ant)
-
 			if len(ant.path) > 1 {
 				ant.path[0].occupied = false
 
 				ant.path = ant.path[1:]
 				fmt.Print(ant.key, "-", ant.path[0].key, " ")
-				// not sure what is happening with this if statement
-				// if len(ant.path) > 1 {
-				// 	continue
 			} else {
 				movedAnts = RemoveAnt(movedAnts, ant)
 				ant.path = []*Room{}
@@ -740,22 +688,5 @@ func main() {
 		}
 
 	}
-
 	fmt.Println()
-
-	// fmt.Print("Unmoved Ants", " : ")
-	// for _, value := range unmovedAnts {
-	// 	fmt.Print(value.key)
-	// 	fmt.Print("  ")
-	// }
-	// fmt.Println()
-
-	// fmt.Print("Moved Ants", " : ")
-	// for _, value := range movedAnts {
-	// 	fmt.Print(value.key)
-	// 	fmt.Print("  ")
-	// }
-
-	// fmt.Println()
-
 }
