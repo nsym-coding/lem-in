@@ -667,10 +667,24 @@ func main() {
 	// }
 	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
 
+		for _, ant := range unmovedAnts {
+			if len(ant.path) == 1 {
+				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				ant.path[0].occupied = true
+				unmovedAnts = RemoveAnt(unmovedAnts, ant)
+				break
+
+			}
+		}
+
 		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
 
 			// fmt.Println()
+			// if ant.path[0] == dfsGraph.getRoom(EndR) {
+			// 	fmt.Print(ant.key, "-", ant.path[0].key, " ")
+			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
+			// 	ant.path[0].occupied = false
 
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, " ")
@@ -679,6 +693,19 @@ func main() {
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
 				// fmt.Println(unmovedAnts)
 			}
+			// if len(ant.path) == 1 {
+			// 	//fmt.Print(ant.key, "-+", ant.path[0].key, " ")
+			// 	movedAnts = RemoveAnt(movedAnts, ant)
+			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
+			// 	//ant.path[0].occupied = true
+			// 	//continue
+			// }
+			// //bfsGraph.getRoom(EndR).occupied = true
+			// //	dfsGraph.getRoom(EndR).occupied = true
+
+			// ant.path[0].occupied = false
+			//ant.path = ant.path[1:]
+
 		}
 
 		fmt.Println()
@@ -689,7 +716,7 @@ func main() {
 			// fmt.Println("moving", ant.key)
 			// movedAnts = RemoveAnt(movedAnts, ant)
 			if len(ant.path) == 1 {
-				fmt.Print(ant.key, "-", ant.path[0].key, " ")
+				//	fmt.Print(ant.key, "*-", ant.path[0].key, " ")
 				movedAnts = RemoveAnt(movedAnts, ant)
 
 			} else {
