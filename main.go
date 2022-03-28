@@ -19,12 +19,10 @@ type Ant struct {
 	currentRoom Room
 }
 
-//Graph structure
 type Graph struct {
 	rooms []*Room
 }
 
-//Room structure
 type Room struct {
 	key      string
 	adjacent []*Room
@@ -48,17 +46,10 @@ func readAntsFile(filename string) []string {
 	return lines
 }
 
+//returns the number of ants from the text file
 func NumAnts(s []string) int {
 
-	args := os.Args[1]
-
-
 	antNum := s[0]
-	s = readAntsFile(args)
-	if s[0] <= "0" {
-		err := fmt.Errorf("ERROR: Invalid number of ants")
-		fmt.Println(err.Error())
-	}
 
 	antNumInt, _ := strconv.Atoi(antNum)
 	return antNumInt
@@ -67,7 +58,16 @@ func NumAnts(s []string) int {
 // Gets out the start room and returns it
 func StartRoom([]string) string {
 
-	args := os.Args[1]
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 
 	var startRoom string
 	s := readAntsFile(args)
@@ -86,7 +86,16 @@ func StartRoom([]string) string {
 // Gets out the end room and returns it
 func EndRoom([]string) string {
 
-	args := os.Args[1]
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 
 	var endRoom string
 	s := readAntsFile(args)
@@ -100,11 +109,38 @@ func EndRoom([]string) string {
 	return endRoom
 }
 
-var (
-	args = os.Args[1]
-	StartR = StartRoom(readAntsFile(args))
-	EndR   = EndRoom(readAntsFile(args))
-)
+func errHandling() {
+
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	if NumAnts(readAntsFile(args)) <= 0 || NumAnts(readAntsFile(args)) > 19990 {
+		err := fmt.Errorf("ERROR: Invalid number of ants")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	if !doesContain("##start", readAntsFile(args)) {
+		err := fmt.Errorf("ERROR: No start room found")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	if !doesContain("##end", readAntsFile(args)) {
+		err := fmt.Errorf("ERROR: No end room found")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+}
 
 //Add Room to a graph
 func (g *Graph) AddRoom(k string) {
@@ -136,6 +172,7 @@ func contains(s []*Room, k string) bool {
 	return false
 }
 
+//looka for s within sl
 func doesContain(s string, sl []string) bool {
 	for _, word := range sl {
 		if s == word {
@@ -145,6 +182,7 @@ func doesContain(s string, sl []string) bool {
 	return false
 }
 
+//checks if a room key exists
 func doesContainRoom(sl []*Room, s string) bool {
 
 	for _, word := range sl {
@@ -155,7 +193,18 @@ func doesContainRoom(sl []*Room, s string) bool {
 	return false
 }
 
+//prints all paths within the given graph
 func (g *Graph) PrintPath() {
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 	fmt.Println(StartRoom(readAntsFile(args)))
 	for _, v := range g.rooms {
 		for _, r := range v.path {
@@ -164,9 +213,19 @@ func (g *Graph) PrintPath() {
 	}
 }
 
-// add all edges
 // Add edge to the graph. deals with a directional graph only but condition in the main makes it undirected
 func (g *Graph) AddEdge(from, to string) {
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
 	//get Room
 	fromRoom := g.getRoom(from)
 	toRoom := g.getRoom(to)
@@ -184,28 +243,37 @@ func (g *Graph) AddEdge(from, to string) {
 		err := fmt.Errorf("ERROR: cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
 		os.Exit(0)
-	} else if fromRoom.key == EndR {
-		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
-		//} //else if toRoom.key == StartR {
-		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
+	} else if fromRoom.key == EndRoom(readAntsFile(args)) {
+
 	} else {
 		fromRoom.adjacent = append(fromRoom.adjacent, toRoom)
 	}
-	//add edge etc
+
 }
 
 //Print will print the adjacent list for each Room of the graph
 func (g *Graph) Print() {
+
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 	// fmt.Println(readAntsFile(args))
 	fmt.Printf("The number of ants is: %v ", NumAnts(readAntsFile(args)))
 	fmt.Println()
 
 	for _, v := range g.rooms {
-		if v.key == StartR {
-			fmt.Printf("\n Start Room is %v : ", StartR)
+		if v.key == StartRoom(readAntsFile(args)) {
+			fmt.Printf("\n Start Room is %v : ", StartRoom(readAntsFile(args)))
 
-		} else if v.key == EndR {
-			fmt.Printf("\n End Room is %v :", EndR)
+		} else if v.key == EndRoom(readAntsFile(args)) {
+			fmt.Printf("\n End Room is %v :", EndRoom(readAntsFile(args)))
 
 		} else {
 			fmt.Printf("\n Room %v : ", v.key)
@@ -227,16 +295,22 @@ var bfsPaths [][]*Room
 
 // Depth First Search algorithm that operates recursively
 func DFS(r *Room, g Graph) {
+	args := ""
 
-	vList := []string{}
-	sRoom := g.getRoom(StartR)
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	sRoom := g.getRoom(StartRoom(readAntsFile(args)))
 
 	// set the room being checked visited status to true
-	if r.key != EndR {
+	if r.key != EndRoom(readAntsFile(args)) {
 		r.visited = true
-
-		// append the r key to the visited list
-		vList = append(vList, r.key)
 
 		// range through the neighbours of the r
 		for _, nbr := range r.adjacent {
@@ -248,13 +322,11 @@ func DFS(r *Room, g Graph) {
 				*/
 
 				nbr.path = append(r.path, nbr)
-				if contains(nbr.path, EndR) {
+				if contains(nbr.path, EndRoom(readAntsFile(args))) {
 
 					dfsPaths = append(dfsPaths, nbr.path)
 
 				}
-
-				vList = append(vList, nbr.key)
 
 				DFS(nbr, Graph{g.rooms})
 
@@ -264,15 +336,13 @@ func DFS(r *Room, g Graph) {
 
 	} else {
 
-		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndR) {
-			vList = append(vList, r.key)
+		if len(sRoom.adjacent) > 1 && !contains(sRoom.adjacent, EndRoom(readAntsFile(args))) {
 
 			sRoom.adjacent = sRoom.adjacent[1:][:]
 
 			DFS(sRoom, Graph{g.rooms})
 
 		} else {
-			vList = append(vList, r.key)
 
 		}
 	}
@@ -282,12 +352,19 @@ func DFS(r *Room, g Graph) {
 
 // Depth first search function that operates recursively
 func DFSBFS(r *Room, g Graph) bool {
+	args := ""
 
-	//vList := []string{}
-	//sRoom := g.getRoom(StartR)
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 
 	// set the room being checked visited status to true
-	if r.key != EndR {
+	if r.key != EndRoom(readAntsFile(args)) {
 		r.visited = true
 
 		// range through the neighbours of the r
@@ -300,7 +377,7 @@ func DFSBFS(r *Room, g Graph) bool {
 				*/
 
 				nbr.path = append(r.path, nbr)
-				if contains(nbr.path, EndR) {
+				if contains(nbr.path, EndRoom(readAntsFile(args))) {
 
 					return true
 
@@ -363,6 +440,16 @@ func DeleteEdge(r *Room, g Graph) {
 
 // Breadth First Search algorithm
 func BFS(r *Room, g Graph) {
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
 
 	var vPaths [][]*Room
 
@@ -378,18 +465,18 @@ func BFS(r *Room, g Graph) {
 	// }
 
 	// checks if there is a link between start and end directly
-	for i, v := range g.getRoom(StartR).adjacent {
-		if v.key == g.getRoom(EndR).key {
-			g.getRoom(EndR).path = append(g.getRoom(EndR).path, g.getRoom(StartR))
-			vPaths = append(vPaths, g.getRoom(StartR).path)
-			g.getRoom(StartR).adjacent = append(g.getRoom(StartR).adjacent[:i], g.getRoom(StartR).adjacent[i+1:]...)
+	for i, v := range g.getRoom(StartRoom(readAntsFile(args))).adjacent {
+		if v.key == g.getRoom(EndRoom(readAntsFile(args))).key {
+			g.getRoom(EndRoom(readAntsFile(args))).path = append(g.getRoom(EndRoom(readAntsFile(args))).path, g.getRoom(StartRoom(readAntsFile(args))))
+			vPaths = append(vPaths, g.getRoom(StartRoom(readAntsFile(args))).path)
+			g.getRoom(StartRoom(readAntsFile(args))).adjacent = append(g.getRoom(StartRoom(readAntsFile(args))).adjacent[:i], g.getRoom(StartRoom(readAntsFile(args))).adjacent[i+1:]...)
 		}
 
 	}
 
 	//checks the queue for the end room and if the queue is not empty
 
-	for !contains(queue, g.getRoom(EndR).key) && len(queue) >= 1 {
+	for !contains(queue, g.getRoom(EndRoom(readAntsFile(args))).key) && len(queue) >= 1 {
 		qfront := queue[0]
 
 		for _, room := range qfront.adjacent {
@@ -404,7 +491,7 @@ func BFS(r *Room, g Graph) {
 
 		queue = queue[1:]
 
-		if doesContainRoom(queue, g.getRoom(EndR).key) {
+		if doesContainRoom(queue, g.getRoom(EndRoom(readAntsFile(args))).key) {
 
 			for _, room := range g.rooms {
 				room.visited = false
@@ -415,29 +502,29 @@ func BFS(r *Room, g Graph) {
 				DeleteEdge(r, g)
 
 			}
-			if len(g.getRoom(StartR).adjacent) == 0 {
+			if len(g.getRoom(StartRoom(readAntsFile(args))).adjacent) == 0 {
 
 				break
 			}
 
-			if len(g.getRoom(StartR).adjacent) >= 1 {
-				for _, froom := range g.getRoom(StartR).adjacent {
+			if len(g.getRoom(StartRoom(readAntsFile(args))).adjacent) >= 1 {
+				for _, froom := range g.getRoom(StartRoom(readAntsFile(args))).adjacent {
 					for _, sroom := range froom.adjacent {
-						if sroom.key != g.getRoom(EndR).key {
+						if sroom.key != g.getRoom(EndRoom(readAntsFile(args))).key {
 							break
 						} else {
-							BFS(g.getRoom(StartR), Graph{g.rooms})
+							BFS(g.getRoom(StartRoom(readAntsFile(args))), Graph{g.rooms})
 							queue = queue[1:]
 						}
 					}
 				}
 			}
-			BFS(g.getRoom(StartR), Graph{g.rooms})
+			BFS(g.getRoom(StartRoom(readAntsFile(args))), Graph{g.rooms})
 
 		}
 	}
 	for _, v := range vPaths {
-		v = append(v, g.getRoom(EndR))
+		v = append(v, g.getRoom(EndRoom(readAntsFile(args))))
 		bfsPaths = append(bfsPaths, v)
 	}
 	bfsPaths = PathDupeCheck(bfsPaths)
@@ -519,19 +606,6 @@ func Reassign(a [][]*Room) [][]*Room {
 
 }
 
-func Min(a int, array [][]int) [][]int {
-	result := array[0]
-	for _, value := range array {
-
-		if len(result) > len(value) {
-			result = value
-		}
-	}
-	result = append(result, a)
-	return array
-
-}
-
 //returns a slice of slice with index 0 representing the number of rooms within a given path
 func pathSlice(a [][]*Room) [][]int {
 	var slice [][]int
@@ -544,23 +618,6 @@ func pathSlice(a [][]*Room) [][]int {
 	}
 
 	return slice
-}
-
-func pathMap(a [][]*Room) {
-	pathmap := make(map[int][]int)
-
-	for i := range a {
-		pathmap[i] = append([]int{}, len(a[i]))
-
-	}
-
-	for key, value := range pathmap {
-		fmt.Printf("%v----%v", key, value)
-		fmt.Println()
-	}
-
-	fmt.Println(pathmap)
-
 }
 
 //finds most efficient path
@@ -580,6 +637,7 @@ func lowestInt(a [][]int, b [][]*Room) (int, []*Room) {
 	return min, path
 }
 
+//increments the zero index for the given array
 func Increment(a [][]int, b int) [][]int {
 
 	for _, slice := range a {
@@ -608,6 +666,18 @@ func RemoveAnt(a []*Ant, b *Ant) []*Ant {
 }
 
 func main() {
+	args := ""
+
+	if len(os.Args) == 2 {
+
+		args = os.Args[1]
+	} else {
+		err := fmt.Errorf("ERROR: Invalid number of arguments")
+		fmt.Println(err.Error())
+		os.Exit(0)
+	}
+
+	errHandling()
 
 	bfsGraph := Graph{}
 
@@ -625,7 +695,7 @@ func main() {
 
 	}
 
-	BFS(bfsGraph.getRoom(StartR), bfsGraph)
+	BFS(bfsGraph.getRoom(StartRoom(readAntsFile(args))), bfsGraph)
 	//bfsGraph.Print()
 
 	dfsGraph := Graph{}
@@ -643,12 +713,12 @@ func main() {
 
 	}
 
-	DFS(dfsGraph.getRoom(StartR), dfsGraph)
+	DFS(dfsGraph.getRoom(StartRoom(readAntsFile(args))), dfsGraph)
 
 	a := Ants{}
 
-	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
-	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+	arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+	rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
 
 	// --------------------------------------------------------
 
@@ -658,26 +728,21 @@ func main() {
 
 	for counter <= NumAnts(readAntsFile(args)) {
 
-		number, _ := lowestInt(Arrange, Rooms)
-		_, route := lowestInt(Arrange, Rooms)
+		number, _ := lowestInt(arrange, rooms)
+		_, route := lowestInt(arrange, rooms)
 		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
-		Increment(Arrange, number)
+		Increment(arrange, number)
 
 		counter++
 	}
 
-	//-------------------------------------------------------------------
-	// for _, paths := range validPaths {
-	// 	for _, path := range paths {
-	// 		fmt.Println(path.key)
-	// 	}
-	// }
+	for _, line := range readAntsFile(args) {
+		fmt.Println(line)
+	}
+	fmt.Println()
+
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
-	// for _ ant := range uunmovedAnts{
-
-	// 	fmt.Println("Checking rooms in path: -----> ", ant)
-	// }
 	for len(unmovedAnts) > 0 || len(movedAnts) >= 1 {
 
 		for _, ant := range unmovedAnts {
@@ -689,53 +754,28 @@ func main() {
 			}
 		}
 
-		// fmt.Println("FIRST  LOOP")
 		for _, ant := range unmovedAnts {
-
-			// fmt.Println()
-			// if ant.path[0] == dfsGraph.getRoom(EndR) {
-			// 	fmt.Print(ant.key, "-", ant.path[0].key, " ")
-			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
-			// 	ant.path[0].occupied = false
 
 			if !ant.path[0].occupied {
 				fmt.Print(ant.key, "-", ant.path[0].key, " ")
 				ant.path[0].occupied = true
 				movedAnts = append(movedAnts, ant)
 				unmovedAnts = RemoveAnt(unmovedAnts, ant)
-				// fmt.Println(unmovedAnts)
-			}
-			// if len(ant.path) == 1 {
-			// 	//fmt.Print(ant.key, "-+", ant.path[0].key, " ")
-			// 	movedAnts = RemoveAnt(movedAnts, ant)
-			// 	unmovedAnts = RemoveAnt(unmovedAnts, ant)
-			// 	//ant.path[0].occupied = true
-			// 	//continue
-			// }
-			// //bfsGraph.getRoom(EndR).occupied = true
-			// //	dfsGraph.getRoom(EndR).occupied = true
 
-			// ant.path[0].occupied = false
-			//ant.path = ant.path[1:]
+			}
 
 		}
 
 		fmt.Println()
 
-		// fmt.Println("SECOND LOOP")
 		for _, ant := range movedAnts {
-
-			// fmt.Println("moving", ant.key)
-			// movedAnts = RemoveAnt(movedAnts, ant)
 
 			if len(ant.path) > 1 {
 				ant.path[0].occupied = false
 
 				ant.path = ant.path[1:]
 				fmt.Print(ant.key, "-", ant.path[0].key, " ")
-				// not sure what is happening with this if statement
-				// if len(ant.path) > 1 {
-				// 	continue
+
 			} else {
 				movedAnts = RemoveAnt(movedAnts, ant)
 				ant.path = []*Room{}
@@ -745,20 +785,5 @@ func main() {
 	}
 
 	fmt.Println()
-
-	// fmt.Print("Unmoved Ants", " : ")
-	// for _, value := range unmovedAnts {
-	// 	fmt.Print(value.key)
-	// 	fmt.Print("  ")
-	// }
-	// fmt.Println()
-
-	// fmt.Print("Moved Ants", " : ")
-	// for _, value := range movedAnts {
-	// 	fmt.Print(value.key)
-	// 	fmt.Print("  ")
-	// }
-
-	// fmt.Println()
 
 }
