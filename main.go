@@ -592,6 +592,11 @@ func RemoveAnt(a []*Ant, b *Ant) []*Ant {
 
 func main() {
 
+	for _, line := range readAntsFile(args) {
+		fmt.Println(line)
+	}
+	fmt.Println()
+
 	errHandling()
 
 	bfsGraph := Graph{}
