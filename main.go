@@ -19,12 +19,10 @@ type Ant struct {
 	currentRoom Room
 }
 
-//Graph structure
 type Graph struct {
 	rooms []*Room
 }
 
-//Room structure
 type Room struct {
 	key      string
 	adjacent []*Room
@@ -48,6 +46,7 @@ func readAntsFile(filename string) []string {
 	return lines
 }
 
+//returns the number of ants from the text file
 func NumAnts(s []string) int {
 
 	antNum := s[0]
@@ -110,12 +109,6 @@ func EndRoom([]string) string {
 	return endRoom
 }
 
-var (
-//args   = os.Args[1]
-// StartR = StartRoom(readAntsFile(os.Args[1]))
-// EndR   = EndRoom(readAntsFile(os.Args[1]))
-)
-
 func errHandling() {
 
 	args := ""
@@ -128,17 +121,6 @@ func errHandling() {
 		fmt.Println(err.Error())
 		os.Exit(0)
 	}
-
-	// if len(args) != 1 {
-	// 	err := fmt.Errorf("ERROR: Invalid number of arguments")
-	// 	fmt.Println(err.Error())
-	// 	os.Exit(0)
-	// }
-	// if len(os.Args) != 2 {
-	// 	err := fmt.Errorf("ERROR: Invalid number of arguments")
-	// 	fmt.Println(err.Error())
-	// 	os.Exit(0)
-	// }
 
 	if NumAnts(readAntsFile(args)) <= 0 || NumAnts(readAntsFile(args)) > 19990 {
 		err := fmt.Errorf("ERROR: Invalid number of ants")
@@ -190,6 +172,7 @@ func contains(s []*Room, k string) bool {
 	return false
 }
 
+//looka for s within sl
 func doesContain(s string, sl []string) bool {
 	for _, word := range sl {
 		if s == word {
@@ -199,6 +182,7 @@ func doesContain(s string, sl []string) bool {
 	return false
 }
 
+//checks if a room key exists
 func doesContainRoom(sl []*Room, s string) bool {
 
 	for _, word := range sl {
@@ -209,6 +193,7 @@ func doesContainRoom(sl []*Room, s string) bool {
 	return false
 }
 
+//prints all paths within the given graph
 func (g *Graph) PrintPath() {
 	args := ""
 
@@ -652,6 +637,7 @@ func lowestInt(a [][]int, b [][]*Room) (int, []*Room) {
 	return min, path
 }
 
+//increments the zero index for the given array
 func Increment(a [][]int, b int) [][]int {
 
 	for _, slice := range a {
@@ -690,11 +676,6 @@ func main() {
 		fmt.Println(err.Error())
 		os.Exit(0)
 	}
-
-	for _, line := range readAntsFile(args) {
-		fmt.Println(line)
-	}
-	fmt.Println()
 
 	errHandling()
 
@@ -736,8 +717,8 @@ func main() {
 
 	a := Ants{}
 
-	Arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
-	Rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
+	arrange := pathSlice(Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths))))
+	rooms := Reassign(PathDupeCheck(PathSelection(bfsPaths, dfsPaths)))
 
 	// --------------------------------------------------------
 
@@ -747,13 +728,18 @@ func main() {
 
 	for counter <= NumAnts(readAntsFile(args)) {
 
-		number, _ := lowestInt(Arrange, Rooms)
-		_, route := lowestInt(Arrange, Rooms)
+		number, _ := lowestInt(arrange, rooms)
+		_, route := lowestInt(arrange, rooms)
 		a.antz = append(a.antz, &Ant{key: "L" + strconv.Itoa(counter), path: route})
-		Increment(Arrange, number)
+		Increment(arrange, number)
 
 		counter++
 	}
+
+	for _, line := range readAntsFile(args) {
+		fmt.Println(line)
+	}
+	fmt.Println()
 
 	unmovedAnts = append(unmovedAnts, a.antz...)
 
