@@ -56,7 +56,7 @@ func NumAnts(s []string) int {
 	antNum := s[0]
 	s = readAntsFile(args)
 	if s[0] <= "0" {
-		err := fmt.Errorf("invalid number of ants")
+		err := fmt.Errorf("ERROR: Invalid number of ants")
 		fmt.Println(err.Error())
 	}
 
@@ -173,14 +173,17 @@ func (g *Graph) AddEdge(from, to string) {
 
 	//check error
 	if fromRoom == nil || toRoom == nil {
-		err := fmt.Errorf("invalid edge (%v-->%v)", from, to)
+		err := fmt.Errorf("ERROR: invalid edge (%v-->%v)", from, to)
 		fmt.Println(err.Error())
+		os.Exit(0)
 	} else if contains(fromRoom.adjacent, to) {
-		err := fmt.Errorf("existing edge (%v-->%v)", from, to)
+		err := fmt.Errorf("ERROR: existing edge (%v-->%v)", from, to)
 		fmt.Println(err.Error())
+		os.Exit(0)
 	} else if fromRoom == toRoom {
-		err := fmt.Errorf("cannot connect room to itself (%v --> %v)", from, to)
+		err := fmt.Errorf("ERROR: cannot connect room to itself (%v --> %v)", from, to)
 		fmt.Println(err.Error())
+		os.Exit(0)
 	} else if fromRoom.key == EndR {
 		//toRoom.adjacent = append(toRoom.adjacent, fromRoom)
 		//} //else if toRoom.key == StartR {
