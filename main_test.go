@@ -1,47 +1,31 @@
 package main
 
-import (
-	"testing"
-	"fmt"
-)
+import "testing"
 
-func BenchmarkAdd(b *testing.B){
-    for i :=0; i < b.N ; i++{
-        Add(4, 6)
-    }
-}
+func Test_NumAnts(t *testing.T) {
 
-// arg1 means argument 1 and arg2 means argument 2, and the expected stands for the 'result we expect'
-type addTest struct {
-	arg1, arg2, expected int
-}
+	got := NumAnts(readAntsFile("example01.txt"))
+	want := 10
 
-var addTests = []addTest{
-	{2, 3, 5},
-	{4, 8, 12},
-	{6, 9, 15},
-	{3, 10, 13},
-}
-
-func TestAdd(t *testing.T) {
-
-	for _, test := range addTests {
-		if output := Add(test.arg1, test.arg2); output != test.expected {
-			t.Errorf("Output %q not equal to expected %q", output, test.expected)
-		}
+	if got != want {
+		t.Errorf("got: %v, wanted: %v instead", got, want)
 	}
 }
 
-func ExampleAdd() {
-    fmt.Println(Add(4, 6))
-    // Output: 10
+func Test_Increment(t *testing.T) {
+
+	a := 1
+	b := 2
+	var c []int
+	c = append(c, a)
+	c = append(c, b)
+	var d [][]int
+	d = append(d, c)
+
+	got := Increment(d, 1)[0][0]
+	want := 2
+
+	if got != want {
+		t.Errorf("got: %v, wanted: %v instead", got, want)
+	}
 }
-// func Test_Add(t *testing.T){
-
-//     got := Add(4, 6)
-//     want := 10
-
-//     if got != want {
-//         t.Errorf("got %v, wanted %v", got, want)
-//     }
-// }

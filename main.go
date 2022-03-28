@@ -33,15 +33,6 @@ type Room struct {
 	occupied bool
 }
 
-// Add is our function that sums two integers
-func Add(x, y int) (res int) {
-	return x + y
-}
-
-// Subtract subtracts two integers
-func Subtract(x, y int) (res int) {
-	return x - y
-}
 
 // Reads file and returns a string slice
 func readAntsFile(filename string) []string {
@@ -60,11 +51,9 @@ func readAntsFile(filename string) []string {
 
 func NumAnts(s []string) int {
 
-	args := os.Args[1]
 
 
 	antNum := s[0]
-	s = readAntsFile(args)
 	if s[0] <= "0" {
 		err := fmt.Errorf("ERROR: Invalid number of ants")
 		fmt.Println(err.Error())
