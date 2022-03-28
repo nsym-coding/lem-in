@@ -33,6 +33,16 @@ type Room struct {
 	occupied bool
 }
 
+// Add is our function that sums two integers
+func Add(x, y int) (res int) {
+	return x + y
+}
+
+// Subtract subtracts two integers
+func Subtract(x, y int) (res int) {
+	return x - y
+}
+
 // Reads file and returns a string slice
 func readAntsFile(filename string) []string {
 	file, _ := os.Open(filename)

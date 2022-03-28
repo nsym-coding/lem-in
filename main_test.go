@@ -2,41 +2,46 @@ package main
 
 import (
 	"testing"
+	"fmt"
 )
 
-func Test_readAntsFile(t *testing.T) {
-	got := readAntsFile("ants.txt")[0]
-	want := "10"
+func BenchmarkAdd(b *testing.B){
+    for i :=0; i < b.N ; i++{
+        Add(4, 6)
+    }
+}
 
-	if got != want {
-		t.Errorf("got: %q, wanted: %q", got, want)
+// arg1 means argument 1 and arg2 means argument 2, and the expected stands for the 'result we expect'
+type addTest struct {
+	arg1, arg2, expected int
+}
+
+var addTests = []addTest{
+	{2, 3, 5},
+	{4, 8, 12},
+	{6, 9, 15},
+	{3, 10, 13},
+}
+
+func TestAdd(t *testing.T) {
+
+	for _, test := range addTests {
+		if output := Add(test.arg1, test.arg2); output != test.expected {
+			t.Errorf("Output %q not equal to expected %q", output, test.expected)
+		}
 	}
 }
 
-func TestNumAnts(t *testing.T) {
-
-	got := NumAnts(readAntsFile("ants.txt"))
-	want := 10
-
-	if got != want {
-		t.Errorf("got: %q, wanted: %q instead", got, want)
-	}
+func ExampleAdd() {
+    fmt.Println(Add(4, 6))
+    // Output: 10
 }
+// func Test_Add(t *testing.T){
 
-func TestStartRoom(t *testing.T) {
+//     got := Add(4, 6)
+//     want := 10
 
-	got := StartRoom(readAntsFile("ants.txt"))
-	want := "start"
-	if got != want {
-		t.Errorf("got: %q, wanted: %q", got, want)
-	}
-}
-
-func TestEndRoom(t *testing.T) {
-	got := EndRoom(readAntsFile("ants.txt"))
-	want := "end"
-
-	if got != want {
-		t.Errorf("got %q, wanted: %q", got, want)
-	}
-}
+//     if got != want {
+//         t.Errorf("got %v, wanted %v", got, want)
+//     }
+// }
