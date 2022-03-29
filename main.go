@@ -49,16 +49,13 @@ func readAntsFile(filename string) []string {
 
 func NumAnts(s []string) int {
 
-	args := os.Args[1]
-
 	antNum := s[0]
-	s = readAntsFile(args)
-	if s[0] <= "0" {
+	if antNum <= "0" {
 		err := fmt.Errorf("invalid number of ants")
 		fmt.Println(err.Error())
 	}
-
 	antNumInt, _ := strconv.Atoi(antNum)
+
 	return antNumInt
 }
 
@@ -510,7 +507,7 @@ func Min(a int, array [][]int) [][]int {
 			result = value
 		}
 	}
-	result = append(result, a)
+	// result = append(result, a)
 	return array
 
 }
@@ -591,7 +588,9 @@ func RemoveAnt(a []*Ant, b *Ant) []*Ant {
 }
 
 func main() {
-
+	if len(os.Args) <= 1 {
+		os.Exit(1)
+	}
 	bfsGraph := Graph{}
 
 	//adding all rooms
